@@ -8,7 +8,9 @@
 
 class usuario {
 
+    public $id_usuario;
     public $nome;
+
 
     /**
      * @return mixed
@@ -18,7 +20,23 @@ class usuario {
         return $this->nome;
     }
 
-    
+    /**
+     * @return mixed
+     */
+    public function getIdUsuario()
+    {
+        return $this->id_usuario;
+    }
+
+    /**
+     * @param mixed $id_usuario
+     */
+    public function setIdUsuario($id_usuario)
+    {
+        $this->id_usuario = $id_usuario;
+    }
+
+
 
 
 }
