@@ -6,4 +6,11 @@
  * Time: 21:59
  */
 
-echo 'oretertertii';
+include 'Model/usuario.php';
+include 'Control/controleusuario.php';
+include 'Control/conexao.php';
+
+$usuario = new controleusuario('1','tghrgdfg1234869','JF','123','01','NULL','N','1');
+
+
+$usuario->inserirusuario();
