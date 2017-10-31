@@ -11,8 +11,21 @@ class controlTotem extends modelTotem
     function retirarSenha(){
         $con = Conexao::mysql();
 
-        $nrUltimoTotem = self::getUltimoTotem();
+        $nrUltimoTotem  = self::getUltimoTotem();
 
+        $nvNrTotem      = $nrUltimoTotem + 1;
+
+        $sql = "INSERT INTO `atd_totem`(`nr_totem`, `cd_prioridade_totem`) VALUES (:nrTotem, :cdPrioridadeTotem)";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":nrTotem", $nvNrTotem);
+        $stmt->bindParam(":cdPrioridadeTotem", $this->cdPrioridadeTotem);
+        $result = $stmt->execute();
+        if ($result){
+            return self::getUltimoTotem();
+        }else{
+            $error  = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
 
     }
 
