@@ -5,7 +5,6 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="../../lib/bootstrap/css/bootstrap.min.css">
     <title>SISPEP | Totem Senha</title>
 </head>
 <body>
@@ -23,7 +22,7 @@
                     <p><a class="btn btn-primary btn-lg" href="javascript:void(0)" onclick="retirarSenha(1)" role="button">Retirar Senha</a></p>
                 </div>
             </div>
-            <div class="col-md-6 col-xs-12">
+                <div class="col-md-6 col-xs-12">
                 <div class="text-center">
                     <h1>Normal</h1>
                     <hr>
@@ -34,6 +33,7 @@
     </div>
 </section>
 <div id="result"></div>
+
 
 </body>
 <script src="../../lib/plugins/jQuery/jquery-1.12.4.min.js"></script>

@@ -6,67 +6,133 @@
  * Time: 09:18
  */
 
+interface intfControlTotem
+{
+    public function retirarSenha();
+    public function getUltimoTotem();
+    public function listaAtdClassif();
+}
 class controlTotem extends modelTotem
 {
-    function retirarSenha()
+    public function retirarSenha()
     {
+        //chama a conexao
         $con = Conexao::mysql();
 
+        //pega o ultimo totem gerado no dia
         $nrUltimoTotem = self::getUltimoTotem();
 
+        //acrescenta mais 1 a senha atual
         $nvNrTotem = $nrUltimoTotem + 1;
 
+        //insere o totem na tabela de totem
         $sql = "INSERT INTO `atd_totem`(`nr_totem`, `cd_prioridade_totem`) VALUES (:nrTotem, :cdPrioridadeTotem)";
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":nrTotem", $nvNrTotem);
         $stmt->bindParam(":cdPrioridadeTotem", $this->cdPrioridadeTotem);
         $result = $stmt->execute();
+        //se conseguir executar a a consulta
         if ($result) {
             return self::getUltimoTotem();
-        } else {
+        }
+        //se não
+        else {
             $error = $stmt->errorInfo();
             return $dsErro = $error[2];
         }
 
     }
 
-    function getUltimoTotem()
+    public static function getUltimoTotem()
     {
-
+        //chama a conexao
         $con = Conexao::mysql();
 
+        //seleciona o maior numero do totem do dia atual
         $sql = "SELECT max(nr_totem) as maxTotem FROM atd_totem WHERE date_format(dh_registro,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d')";
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();
+        //se conseguir executar a a consulta
         if ($result) {
             $reg = $stmt->fetch(PDO::FETCH_OBJ);
 
+            //retorna o maior totem
             return $reg->maxTotem;
-        } else {
+        }
+        //se não
+        else {
+            //armazena e retorna a mensagem de erro
             $error = $stmt->errorInfo();
             return $dsErro = $error[2];
         }
     }
 
-    function getDadosTotem($cdTotem)
+    public function getDadosTotem($cdTotem)
     {
 
+        //chama a conexao
         $con = Conexao::mysql();
 
-        $sql  = "SELECT t.nr_totem, t.dh_registro, ds_prioridade_totem FROM atd_totem t, atd_prioridade_totem pt WHERE t.cd_prioridade_totem = pt.cd_prioridade_totem AND t.cd_totem = :cdTotem";
+        //pega os dados do totem
+        $sql  = "SELECT t.nr_totem, t.dh_registro, ds_prioridade_totem FROM atd_totem t, atd_prioridade_totem pt 
+        WHERE t.cd_prioridade_totem = pt.cd_prioridade_totem AND t.cd_totem = :cdTotem";
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":cdTotem", $cdTotem);
         $result = $stmt->execute();
+        //se conseguir executar a a consulta
         if ($result) {
             $reg = $stmt->fetch(PDO::FETCH_OBJ);
 
+            //chama as funções de get e set para armazena os dados nos atributos
             self::setDhTotem(date("d/m/Y H:i:s", strtotime($reg->dh_registro)));
             self::setDsPrioridadeTotem($reg->ds_prioridade_totem);
             self::setNrSenha($reg->nr_totem);
 
-        } else {
+        }
+        //se não
+        else {
+            //armazena e retorna a mensagem de erro
             $error = $stmt->errorInfo();
             return $dsErro = $error[2];
         }
+    }
+
+    public static function listaAtdClassif(){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //pega os dados do totem
+        $sql  = "SELECT t.cd_totem, t.nr_totem, t.dh_registro, ds_prioridade_totem FROM atd_totem t, atd_prioridade_totem pt 
+        WHERE t.cd_prioridade_totem = pt.cd_prioridade_totem AND t.sn_atendido = 'N' ORDER BY pt.nr_ordem, t.dh_registro ASC";
+        $stmt = $con->prepare($sql);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            while($reg = $stmt->fetch(PDO::FETCH_OBJ)){
+
+                //exibe a lista da classificação
+                echo '
+                    <tr>
+                        <td align="center">'.$reg->nr_totem.'</td>
+                        <td align="center">'.date("d/m/Y H:i", strtotime($reg->dh_registro)).'</td>
+                        <td align="center">'.$reg->ds_prioridade_totem.'</td>
+                        <td align="center">
+                            <a href="../view/atd_viewAtdClassificacao.php?s='.base64_encode($reg->cd_totem).'">Atender</a>
+                            <a href="javascript:void(0)" onclick="cancelaClassificacao(\''.$reg->cd_totem.'\')">Cancelar</a>
+                            </td>
+                    </tr>
+                ';
+
+            }
+
+        }
+        //se não
+        else {
+            //armazena e retorna a mensagem de erro
+            $error = $stmt->errorInfo();
+            echo $dsErro = $error[2];
+        }
+
     }
 }
