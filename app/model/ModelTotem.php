@@ -6,7 +6,7 @@
  * Time: 09:18
  */
 
-class modelTotem
+class ModelTotem
 {
     public $cdTotem;
     public $nrSenha;

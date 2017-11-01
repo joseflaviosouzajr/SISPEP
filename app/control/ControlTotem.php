@@ -12,7 +12,7 @@ interface intfControlTotem
     public function getUltimoTotem();
     public function listaAtdClassif();
 }
-class controlTotem extends modelTotem
+class ControlTotem extends ModelTotem
 {
     public function retirarSenha()
     {
@@ -58,6 +58,59 @@ class controlTotem extends modelTotem
 
             //retorna o maior totem
             return $reg->maxTotem;
+        }
+        //se não
+        else {
+            //armazena e retorna a mensagem de erro
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+    }
+
+    //retorna o numero do totem passando a chave primaria cd_totem como parametro
+    public static function returnNrTotem($cd_totem)
+    {
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //seleciona nr_totem
+        $sql = "SELECT nr_totem FROM atd_totem WHERE cd_totem = :cdTotem";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdTotem", $cd_totem);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $reg = $stmt->fetch(PDO::FETCH_OBJ);
+
+            //retorna o numero da senha do totem
+            return $reg->nr_totem;
+        }
+        //se não
+        else {
+            //armazena e retorna a mensagem de erro
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+    }
+
+    //retorna a descrição da prioridade do totem
+    public static function returnDsPrioridade($cd_totem)
+    {
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //seleciona nr_totem
+        $sql = "SELECT ds_prioridade_totem FROM atd_totem t, atd_prioridade_totem pt WHERE t.cd_totem = :cdTotem 
+        AND t.cd_prioridade_totem = pt.cd_prioridade_totem";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdTotem", $cd_totem);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $reg = $stmt->fetch(PDO::FETCH_OBJ);
+
+            //retorna descrição da prioridade
+            return $reg->ds_prioridade_totem;
         }
         //se não
         else {
@@ -132,6 +185,30 @@ class controlTotem extends modelTotem
             //armazena e retorna a mensagem de erro
             $error = $stmt->errorInfo();
             echo $dsErro = $error[2];
+        }
+
+    }
+
+    public static function concluirClassif($cdTotem){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
+
+        //Atualiza o registro do totem com os dados da conclusão da classificacao
+        $sql  = "UPDATE atd_totem SET sn_atendido = 'S', cd_usuario_atendimento = :cdUsuarioSessao, dh_atendido = now() WHERE cd_totem = :cdTotem";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdTotem", $cdTotem);
+        $stmt->bindParam(":cdUsuarioSessao", $cdUsuarioSessao);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+           return true;
+        }
+        //se não
+        else {
+           return false;
         }
 
     }

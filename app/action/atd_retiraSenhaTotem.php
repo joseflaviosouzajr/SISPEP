@@ -1,8 +1,8 @@
 <?php
 
 include_once '../conf/Conexao.php';
-include_once '../model/modelTotem.php';
-include_once '../control/controlTotem.php';
+include_once '../model/ModelTotem.php';
+include_once '../control/ControlTotem.php';
 
 $cdPrioridadeTotem = $_POST['cdPrioridadeTotem'];
 
