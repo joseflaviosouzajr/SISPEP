@@ -2,6 +2,7 @@
 
 class ModelPaciente extends ModelPessoa
 {
+    public $cdPaciente;
     public $dsEndereco;
     public $nrEndereco;
     public $dsComplemento;
@@ -31,6 +32,22 @@ class ModelPaciente extends ModelPessoa
         $this->nrTelefone      = $nrTelefone;
         $this->dsEmail         = $dsEmail;
         $this->dsObservacao    = $dsObservacao;
+    }
+
+    /**
+     * @param mixed $cdPaciente
+     */
+    public function setCdPaciente($cdPaciente)
+    {
+        $this->cdPaciente = $cdPaciente;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCdPaciente()
+    {
+        return $this->cdPaciente;
     }
 
 }

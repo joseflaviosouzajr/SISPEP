@@ -9,7 +9,7 @@ include_once "../model/ModelTotem.php";
 include_once "../control/ControlTotem.php";
 
 $cdTotem        = base64_decode($_POST['cdTotem']);
-echo $nmPaciente     = $_POST['nmPaciente'];
+$nmPaciente     = $_POST['nmPaciente'];
 $dsDiagnostico  = $_POST['dsDiagnostico'];
 $idade          = $_POST['idade'];
 $peso           = $_POST['peso'];

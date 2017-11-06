@@ -20,14 +20,6 @@ $pag     = isset($_GET['pag']) ? $_GET['pag'] : null;
 <?php include_once 'navbar.php';?>
 <section>
 
-    <table border="1" width="100%">
-        <tr>
-            <td><a href="atd_viewListClassificacao.php"><< Lista de Pacientes</a></td>
-            <td align="center" width="300px">USUARIO LOGADO</td>
-            <td align="center" width="100px"><a href="action/logout.php">Sair</a></td>
-        </tr>
-    </table>
-
     <form action="../action/atd_regClassificacao.php" method="POST">
         <input type="hidden" name="cdTotem" value="<?php echo $cdTotem; ?>">
         <table border="1" width="100%">

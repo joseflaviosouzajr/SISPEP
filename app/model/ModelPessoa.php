@@ -71,4 +71,20 @@ class modelPessoa
     {
         $this->dsEstadoCivil = $dsEstadoCivil;
     }
+
+    /**
+     * @param mixed $dtNascimento
+     */
+    public function setDtNascimento($dtNascimento)
+    {
+        $this->dtNascimento = $dtNascimento;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDtNascimento()
+    {
+        return $this->dtNascimento;
+    }
 }

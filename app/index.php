@@ -8,18 +8,28 @@
     <title>SISPEP | Lista Cadastro Paciente</title>
 </head>
 <body>
-    <table width="100%">
-        <tr>
-            <td align="center" valign="middle">
-                <h2><a href="view/atd_viewRetiraTotem.php">TOTEM</a></h2>
-            </td>
-            <td align="center" valign="middle">
-                <h2><a href="view/atd_viewListClassificacao.php">CLASSIFICAÇÃO</a></h2>
-            </td>
-            <td align="center" valign="middle">
-                <h2><a href="view/atd_viewListCadastro.php">CADASTRO<br>PACIENTE</a></h2>
-            </td>
-        </tr>
-    </table>
+<table width="100%" BORDER="1">
+    <tr>
+        <td align="center" valign="middle" width="33%">
+            <h2><a href="view/atd_viewRetiraTotem.php">TOTEM</a></h2>
+        </td>
+        <td align="center" valign="middle" width="33%">
+            <h2><a href="view/atd_viewListClassificacao.php">CLASSIFICAÇÃO</a></h2>
+        </td>
+        <td align="center" valign="middle" width="33%">
+            <h2><a href="view/atd_viewListCadastro.php">CADASTRO<br>PACIENTE</a></h2>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" valign="middle">
+            <h2><a href="view/atd_viewIniciaAtdPaciente.php">INICIAR ATENDIMENTO<br>PACIENTE</a></h2>
+        </td>
+        <td align="center" valign="middle">
+            <h2><a href="view/med_viewListAtendimento.php">ATENDIMENTO<br>MÉDICO</a></h2>
+        </td>
+        <td>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

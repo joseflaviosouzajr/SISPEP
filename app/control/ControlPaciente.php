@@ -62,7 +62,7 @@ class ControlPaciente extends ModelPaciente
 
     }
 
-    public static function listCadPaciente(){
+    public static function listAguardaCadPaciente(){
 
         //chama a conexao
         $con = Conexao::mysql();
@@ -111,5 +111,152 @@ class ControlPaciente extends ModelPaciente
         }
 
     }
+
+    public static function listAtendimentoPaciente(){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //pega usuário logado
+        $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
+
+        //exibe a lista de pacientes cadastrados sem atendimentos gerados do dia
+        $sql = "SELECT a.cd_paciente, a.cd_atendimento, p.nm_paciente, a.dh_atendimento FROM g_atendimento a, g_paciente p WHERE a.cd_paciente = p.cd_paciente AND a.sn_alta = 'N'";
+        $stmt = $con->prepare($sql);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result){
+            $num = $stmt->rowCount();
+            if($num > 0){
+                while($reg = $stmt->fetch(PDO::FETCH_OBJ)){
+
+                    //exibe a lista da classificação
+                    echo '
+                        <tr>
+                            <td align="center">'.$reg->cd_atendimento.'</td>
+                            <td align="center">'.$reg->cd_paciente.'</td>
+                            <td align="center">'.$reg->nm_paciente.'</td>
+                            <td align="center">'.date("d/m/Y H:i", strtotime($reg->dh_atendimento)).'</td>
+                            <td align="center">
+                                <a href="../view/med_viewProntuario.php?p='.base64_encode($reg->cd_paciente).'&a='.base64_encode($reg->cd_atendimento).'">Atender</a>
+                        </tr>
+                    ';
+
+                }
+            }else{
+                echo '
+                <tr><td colspan="4" align="center">Nenhum paciente encontrado</td></tr>
+                ';
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+    }
+
+    public static function listAguardaAtendimento(){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //pega usuário logado
+        $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
+
+        //exibe a lista de pacientes cadastrados sem atendimentos
+        $sql = "SELECT cd_paciente, nm_paciente, dh_cadastro FROM g_paciente WHERE cd_paciente NOT IN (SELECT cd_paciente FROM g_atendimento WHERE sn_alta = 'N')";
+        $stmt = $con->prepare($sql);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result){
+            $num = $stmt->rowCount();
+            if($num > 0){
+                while($reg = $stmt->fetch(PDO::FETCH_OBJ)){
+
+                    //exibe a lista da classificação
+                    echo '
+                        <tr>
+                            <td align="center">'.$reg->cd_paciente.'</td>
+                            <td align="center">'.$reg->nm_paciente.'</td>
+                            <td align="center">'.date("d/m/Y H:i", strtotime($reg->dh_cadastro)).'</td>
+                            <td align="center">
+                                <a href="../action/atd_iniciaAtdPaciente.php?c='.base64_encode($reg->cd_paciente).'">Iniciar Atendimento</a>
+                        </tr>
+                    ';
+
+                }
+            }else{
+                echo '
+                <tr><td colspan="4" align="center">Nenhum paciente encontrado</td></tr>
+                ';
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+    }
+
+
+    //construtor genérico
+    public function dadosPaciente($cdPaciente){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //exibe a lista de pacientes cadastrados sem atendimentos
+        $sql = "SELECT nm_paciente, dt_nascimento FROM g_paciente WHERE cd_paciente = :cdPaciente";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdPaciente", $cdPaciente);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result){
+            $num = $stmt->rowCount();
+            if($num > 0){
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+
+                self::setNmPessoa($reg->nm_paciente);
+                self::setDtNascimento($reg->dt_nascimento);
+
+            }else{
+                echo '
+                <tr><td colspan="4" align="center">Nenhum paciente encontrado</td></tr>
+                ';
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+}
+
+
+public function iniciaAtendimentoPaciente(){
+
+    //chama a conexao
+    $con = Conexao::mysql();
+
+    //pega usuário logado
+    $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
+
+    //insere um novo atendimento para o paciente
+    $sql = "INSERT INTO g_atendimento (cd_paciente, cd_usuario_registro) VALUES (:cdPaciente, :cdUsuario)";
+    $stmt = $con->prepare($sql);
+    $stmt->bindParam(":cdPaciente", $this->cdPaciente);
+    $stmt->bindParam(":cdUsuario", $cdUsuarioSessao);
+    $result = $stmt->execute();
+    //se conseguir executar a a consulta
+    if ($result){
+        return true;
+    }
+    //se não
+    else {
+        $error = $stmt->errorInfo();
+        return $dsErro = $error[2];
+    }
+
+}
 
 }
