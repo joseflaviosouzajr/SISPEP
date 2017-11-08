@@ -5,7 +5,8 @@ interface intControlDoc{
     public function cadDocumento($documento, $cdAtendimento);
     public function excDocumento($cdRegDocumento);
     public function cancelDocumento($documento, $cdRegDocumento);
-    public function updCampoDocumento($documento, $dsCampo, $vlCampo);
+    public function updDocumento($cdRegDocumento);
+    public function fechaDocumento($documento,$cdRegDocumento);
     public static function snDocumentoFechado($documento);
     public static function snDocumentoCancelado();
 
@@ -34,7 +35,7 @@ class ControlDocumento
             if ($result){
                 $num = $stmt->rowCount();
                 if($num > 0){
-                    return true;
+                    return intval($con->lastInsertId());
                 }else{
                     return false;
                 }
@@ -52,11 +53,41 @@ class ControlDocumento
     public function cancelDocumento($documento, $cdRegDocumento){
 
     }
-    public function updCampoDocumento($documento, $dsCampo, $vlCampo){
+    public function updDocumento($cdRegDocumento){
 
     }
 
-    public static function snDocumentoFechado($documento, $cdAtendimento){
+    public function fechaDocumento($documento,$cdRegDocumento){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        $snDocumentoFechado = self::snDocumentoFechado($documento, $cdAtendimento=null, $cdRegDocumento);
+
+        if($snDocumentoFechado == 'N'){
+
+            //exibe a lista de pacientes cadastrados sem atendimentos
+            $sql = "UPDATE $documento SET sn_fechado = 'S', dh_fechamento = now() WHERE cd_reg_doc = :cdRegDocumento";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(":cdRegDocumento", $cdRegDocumento);
+            $result = $stmt->execute();
+            //se conseguir executar a a consulta
+            if ($result){
+                    return true;
+            }
+            //se não
+            else {
+                $error = $stmt->errorInfo();
+                return $dsErro = $error[2];
+            }
+        }else{
+            return 'já existe um documento aberto';
+        }
+    }
+
+    //verifica se o documento esta fechado ou aberto. a verificação poderá ser feita atraves dos parametros documento + atendimento(cdAtendimento) ou documento + registro do documento(cdRegDocumento)
+    public static function snDocumentoFechado($documento, $cdAtendimento=null, $cdRegDocumento=""){
 
         //chama a conexao
         $con = Conexao::mysql();
@@ -64,9 +95,9 @@ class ControlDocumento
         $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
         //exibe a lista de pacientes cadastrados sem atendimentos
-        $sql = "SELECT sn_fechado FROM $documento WHERE cd_atendimento = :cdAtendimento";
+        $sql = "SELECT sn_fechado FROM $documento ";
+        $sql .= (is_null($cdAtendimento)) ? "WHERE cd_reg_doc = $cdRegDocumento": "WHERE cd_atendimento = $cdAtendimento";
         $stmt = $con->prepare($sql);
-        $stmt->bindParam(":cdAtendimento", $cdAtendimento);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
         if ($result){
@@ -94,7 +125,7 @@ class ControlDocumento
         $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
         //exibe a lista de pacientes cadastrados sem atendimentos
-        $sql = "SELECT cd_reg_doc, dh_registro, CASE WHEN sn_fechado = 'S' THEN 'FECHADO' WHEN sn_fechado = 'N' THEN 'EM ABERTO' WHEN sn_cancelado = 'S' THEN 'CANCELADO' ELSE '' END dsStatus FROM $documento WHERE cd_atendimento IN (SELECT cd_atendimento FROM g_atendimento WHERE cd_paciente = :cdPaciente)";
+        $sql = "SELECT cd_reg_doc, dh_registro, CASE WHEN sn_fechado = 'S' THEN 'FECHADO' WHEN sn_fechado = 'N' THEN 'EM ABERTO' WHEN sn_cancelado = 'S' THEN 'CANCELADO' ELSE '' END dsStatus, cd_atendimento FROM $documento WHERE cd_atendimento IN (SELECT cd_atendimento FROM g_atendimento WHERE cd_paciente = :cdPaciente)";
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":cdPaciente", $cdPaciente);
         $result = $stmt->execute();
@@ -103,10 +134,14 @@ class ControlDocumento
             $num = $stmt->rowCount();
             if($num > 0){
                 while($reg = $stmt->fetch(PDO::FETCH_OBJ)){
+                    $pag = self::returnPagDoc($documento);
+
+                    $url = "http://".$_SERVER['HTTP_HOST']."/sispep/app/view/med_viewProntuario.php?p=".base64_encode($cdPaciente)."&a=".base64_encode($reg->cd_atendimento)."&pag=".$pag."&doc=".base64_encode($reg->cd_reg_doc);
+
                     echo '
                         <tr>
                             <td>
-                                <a href="#" onclick="viewDadosDoc(\''.$documento.'\',\''.$reg->cd_reg_doc.'\')">
+                                <a href="'.$url.'" onclick="viewDadosDoc(\''.$documento.'\',\''.$reg->cd_reg_doc.'\')">
                                 NOME DO USUARIO
                                 <br> 
                                 '.$reg->dsStatus.'
@@ -136,5 +171,35 @@ class ControlDocumento
 
     public static function snDocumentoCancelado(){
 
+    }
+
+    //retorna o nome da tabela a partir do formulario
+    public static function returnTableDoc($form){
+        switch ($form){
+            case 'formFichaClinica':
+                $documento = 'doc_ficha_clinica';
+                break;
+
+            default:
+                $documento = null;
+                break;
+        }
+
+        return $documento;
+    }
+
+    //retorna a pagina do documento a partir da tabela
+    public static function returnPagDoc($table){
+        switch ($table){
+            case 'doc_ficha_clinica':
+                $pag = 'fichaClinica';
+                break;
+
+            default:
+                $pag = null;
+                break;
+        }
+
+        return $pag;
     }
 }

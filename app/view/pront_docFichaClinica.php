@@ -1,7 +1,16 @@
-<?php $form = 'formFichaClinica'; ?>
-<form id="formFichaClinica" action="../action/doc_cadFichaClinica.php" method="post">
-    <input type="hidden" name="form" value="formFichaClinica">
-    <input type="hidden" name="cdAtendimento" value="<?php echo $cdAtendimento;?>">
+<?php
+$form = 'formFichaClinica';
+
+if(!is_null($cdRegDocumento)){
+    $cdoc = new ControlFichaClinica();
+    $cdoc->dadosDocumento($cdRegDocumento);
+}
+?>
+<form id="formFichaClinica" action="../action/doc_cadDocumento.php" method="post">
+    <input type="hidden" name="form" value="<?php echo $form;?>"/>
+    <input type="hidden" name="cdAtendimento" value="<?php echo $cdAtendimento;?>"/>
+    <input type="hidden" name="pag" value="<?php echo pag_fichaClinica;?>"/>
+    <input type="hidden" name="cdRegDocumento" value="<?php echo $cdRegDocumento;?>"/>
     <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td width="70%">
@@ -36,12 +45,12 @@
                     </tr>
                 </table>
             </td>
-            <td width="30%" valign="top" rowspan="2">
+            <td width="30%" valign="top">
                 <table width="100%">
-                <?php
-                //inclui a lista de historico deste documento para o usuário do prontuário acessado
-                include_once 'doc_historico.php';
-                ?>
+                    <?php
+                    //inclui a lista de historico deste documento para o usuário do prontuário acessado
+                    include_once 'doc_historico.php';
+                    ?>
                 </table>
             </td>
         </tr>

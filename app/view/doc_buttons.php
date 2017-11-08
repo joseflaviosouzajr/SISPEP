@@ -12,7 +12,7 @@ if (is_null($form)){
         <button type="button" name="nvDoc" onclick="novoDoc('<?php echo $form;?>')">Novo</button>
     </li>
     <li>
-        <button type="button" name="saveDoc">Salvar</button>
+        <button type="button" name="saveDoc" onclick="salvaDoc('<?php echo $form;?>')">Salvar</button>
     </li>
     <li>
         <button type="button" name="cancelDoc">Cancelar</button>

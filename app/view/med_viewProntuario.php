@@ -23,11 +23,13 @@ include_once '../control/ControlDocumento.php';
 include_once 'navbar.php';
 
 //pega os parametros de cod do paciente e cod do atendimento via get e decodifica
-$cdPaciente    = base64_decode($_GET['p']);
-$cdAtendimento = base64_decode($_GET['a']);
+$cdPaciente     = base64_decode($_GET['p']);
+$cdAtendimento  = base64_decode($_GET['a']);
 
 //pag armazena a página(itens do menu) que será exibida
-$pag           = isset($_GET['pag']) ? $_GET['pag'] : null;
+$pag            = isset($_GET['pag']) ? $_GET['pag'] : null;
+
+$cdRegDocumento = isset($_GET['doc']) ? $_GET['doc'] : null;
 
 //retorna dos dados do paciente através de um construtor genérico
 $pct = new ControlPaciente();
@@ -35,6 +37,7 @@ $pct->dadosPaciente($cdPaciente);
 
 $nmPaciente = $pct->getNmPessoa();
 
+define("pag_fichaClinica", "fichaClinica");
 ?>
 <section>
     <div>
@@ -87,8 +90,10 @@ $nmPaciente = $pct->getNmPessoa();
 </body>
 <script src="../../lib/plugins/jQuery/jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
-    $("#formFichaClinica textarea").prop("disabled", true);
 
+    <?php if(is_null($cdRegDocumento)){?>
+    $("#formFichaClinica textarea").prop("disabled", true);
+    <?php }?>
     function novoDoc(form){
 
         $("#"+form+" textarea").prop("disabled", false);
@@ -96,6 +101,19 @@ $nmPaciente = $pct->getNmPessoa();
         $.ajax({
             type: 'POST',
             url: $("#"+form).attr('action'),
+            data: $("#"+form).serialize(),
+            success: function(data){
+                $("#result").html(data);
+            }
+        });
+
+    }
+
+    function salvaDoc(form){
+
+        $.ajax({
+            type: 'POST',
+            url: '../action/doc_updDocumento.php',
             data: $("#"+form).serialize(),
             success: function(data){
                 $("#result").html(data);

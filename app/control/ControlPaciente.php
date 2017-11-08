@@ -198,6 +198,32 @@ class ControlPaciente extends ModelPaciente
         }
     }
 
+    public static function returnCdPaciente($cdAtendimento){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //Seleciona todos os registros da classificação que não foram cadastrados
+        $sql = "SELECT cd_paciente FROM g_atendimento WHERE cd_atendimento = $cdAtendimento";
+        $stmt = $con->prepare($sql);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+            if ($num > 0) {
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+
+                return $reg->cd_paciente;
+            } else {
+
+                return 'erro';
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+    }
 
     //construtor genérico
     public function dadosPaciente($cdPaciente){
