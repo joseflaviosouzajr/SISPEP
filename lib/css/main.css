@@ -27,3 +27,7 @@ ul.buttons-doc li button:hover {
     background-color: #111111;
     color: white;
 }
+
+.text-line-throught{
+    text-decoration: line-through;
+}

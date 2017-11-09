@@ -15,9 +15,9 @@ if (is_null($form)){
         <button type="button" name="saveDoc" onclick="salvaDoc('<?php echo $form;?>')">Salvar</button>
     </li>
     <li>
-        <button type="button" name="cancelDoc">Cancelar</button>
+        <button type="button" name="cancelDoc" onclick="cancelaDoc('<?php echo $form;?>')">Cancelar</button>
     </li>
     <li>
-        <button type="button" name="excDoc">Excluir</button>
+        <button type="button" name="excDoc" onclick="excluiDoc('<?php echo $form;?>')">Excluir</button>
     </li>
 </ul>

@@ -1,9 +1,32 @@
 <?php
 $form = 'formFichaClinica';
 
+include_once '../model/ModelFichaClinica.php';
+include_once '../control/ControlFichaClinica.php';
+
+$dsHistoriaClinica  = "";
+$dsEvolucao         = "";
+$dsAlergias         = "";
+$dsDiagInicial      = "";
+$dsMedicamentoUso   = "";
+$dsHistorico        = "";
+$disabled           = "";
+
 if(!is_null($cdRegDocumento)){
     $cdoc = new ControlFichaClinica();
     $cdoc->dadosDocumento($cdRegDocumento);
+
+
+    $dsHistoriaClinica  = $cdoc->getDsHistoriaClinica();
+    $dsEvolucao         = $cdoc->getDsEvolucao();
+    $dsAlergias         = $cdoc->getDsAlergias();
+    $dsDiagInicial      = $cdoc->getDsDiagInicial();
+    $dsMedicamentoUso   = $cdoc->getDsMedicamentoUso();
+    $dsHistorico        = $cdoc->getDsHistorico();
+    $snCancelado        = $cdoc->getSnCancelado();
+    $snFechado          = $cdoc->getSnFechado();
+
+    $disabled = ($snFechado == 'S' || $snCancelado == 'S') ? 'disabled' : '';
 }
 ?>
 <form id="formFichaClinica" action="../action/doc_cadDocumento.php" method="post">
@@ -19,28 +42,28 @@ if(!is_null($cdRegDocumento)){
                         <td>
                             <label>História Clinica</label>
                             <br/>
-                            <textarea name="dsHistoriaClinica" id="" cols="30" rows="10"></textarea>
+                            <textarea name="dsHistoriaClinica" id="" cols="30" rows="10" <?php echo $disabled; ?>><?php echo $dsHistoriaClinica;?></textarea>
                             <br/>
                             <label>Evolução</label>
                             <br/>
-                            <textarea name="dsEvolucao" id="" cols="30" rows="10"></textarea>
+                            <textarea name="dsEvolucao" id="" cols="30" rows="10" <?php echo $disabled; ?>><?php echo $dsEvolucao;?></textarea>
                             <br/>
                             <label>Alergias</label>
                             <br/>
-                            <textarea name="dsAlergias" id="" cols="30" rows="10"></textarea>
+                            <textarea name="dsAlergias" id="" cols="30" rows="10" <?php echo $disabled; ?>><?php echo $dsAlergias;?></textarea>
                         </td>
                         <td>
                             <label>Diagnóstico Inicial</label>
                             <br/>
-                            <textarea name="dsDiagInicial" id="" cols="30" rows="10"></textarea>
+                            <textarea name="dsDiagInicial" id="" cols="30" rows="10" <?php echo $disabled; ?>><?php echo $dsDiagInicial;?></textarea>
                             <br/>
                             <label>Medicamentos em Uso</label>
                             <br/>
-                            <textarea name="dsMedicamentoUso" id="" cols="30" rows="10"></textarea>
+                            <textarea name="dsMedicamentoUso" id="" cols="30" rows="10" <?php echo $disabled; ?>><?php echo $dsMedicamentoUso;?></textarea>
                             <br/>
                             <label>Histórico</label>
                             <br/>
-                            <textarea name="dsHistorico" id="" cols="30" rows="10"></textarea>
+                            <textarea name="dsHistorico" id="" cols="30" rows="10" <?php echo $disabled; ?>><?php echo $dsHistorico;?></textarea>
                         </td>
                     </tr>
                 </table>

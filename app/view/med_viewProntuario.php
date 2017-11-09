@@ -121,5 +121,40 @@ define("pag_fichaClinica", "fichaClinica");
         });
 
     }
+
+    function cancelaDoc(form){
+
+        var confirmCancela = confirm('Tem certeza que deseja cancelar este documento?');
+
+        if(confirmCancela) {
+
+            $.ajax({
+                type: 'POST',
+                url: '../action/doc_cancelarDocumento.php',
+                data: $("#" + form).serialize(),
+                success: function (data) {
+                    $("#result").html(data);
+                }
+            });
+        }
+
+    }
+    function excluiDoc(form){
+
+        var confirmExclui = confirm('Tem certeza que deseja excluir este documento?');
+
+        if(confirmExclui) {
+
+            $.ajax({
+                type: 'POST',
+                url: '../action/doc_excluirDocumento.php',
+                data: $("#" + form).serialize(),
+                success: function (data) {
+                    $("#result").html(data);
+                }
+            });
+        }
+
+    }
 </script>
 </html>
