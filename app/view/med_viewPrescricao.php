@@ -11,7 +11,7 @@ include_once '../control/ControlPrescricao.php';
         <td width="70%" valign="top">
             <form id="formAddItemPrescricao" method="post" style="padding: 1em;">
                 <input type="hidden" name="cdAtendimento" value="<?php echo $cdAtendimento;?>"/>
-                <input type="hidden" name="cdRegDocumento" value="<?php echo $cdRegDocumento;?>"/>
+                <input type="hidden" name="cdPrescricao" value="<?php echo $cdRegDocumento;?>"/>
 
                 <label>Selecione um item para inserir: </label>
                 <select id="listProdutos" name="produto" style="width: 80%">

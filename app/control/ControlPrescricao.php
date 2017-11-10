@@ -6,7 +6,7 @@
  * Time: 18:50
  */
 
-class ControlPrescricao
+class ControlPrescricao extends ModelPrescricao
 {
 
     public function cadPrescricao($cdAtendimento, $cdPaciente){
@@ -47,15 +47,14 @@ class ControlPrescricao
         }
     }
 
-
-    public static function snPrescricaoAberta($cdAtendimento){
+    public static function snPrescricaoAberta($cdAtendimento, $cdPrescricao = null){
         //chama a conexao
         $con = Conexao::mysql();
 
         //busca os dados do documento passado no parametro
-        $sql = "SELECT cd_prescricao FROM g_prescricao WHERE cd_atendimento = :cdAtendimento";
+        $sql = "SELECT cd_prescricao FROM g_prescricao WHERE ";
+        $sql .= (!is_null($cdPrescricao)) ? "cd_atendimento = $cdAtendimento" : "cd_prescricao = $cdPrescricao";
         $stmt = $con->prepare($sql);
-        $stmt->bindParam(":cdAtendimento", $cdAtendimento);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
         if ($result) {
@@ -124,5 +123,43 @@ class ControlPrescricao
 
     }
 
+    public function addItemPrescricao(){
 
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //retorna se a prescrição esta aberta
+        $snPrescricaoAberta = self::snPrescricaoAberta(null,$this->cdPrescricao);
+
+        //se true
+        if($snPrescricaoAberta){
+            return 'prescrição já aberta';
+        }else{
+
+            //busca os dados do documento passado no parametro
+            $sql = "INSERT INTO g_prescricao (cd_atendimento, cd_paciente, cd_usuario_registro) VALUES (:cdAtendimento, :cdPaciente, :cdUsuarioSessao)";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(":cdAtendimento", $cdAtendimento);
+            $stmt->bindParam(":cdPaciente", $cdPaciente);
+            $stmt->bindParam(":cdUsuarioSessao", $cdUsuarioSessao);
+            $result = $stmt->execute();
+            //se conseguir executar a a consulta
+            if ($result) {
+                $num = $stmt->rowCount();
+                if($num > 0){
+                    return intval($con->lastInsertId());
+                }else{
+                    return false;
+                }
+            }
+            //se não
+            else {
+                $error = $stmt->errorInfo();
+                return $dsErro = $error[2];
+            }
+        }
+
+    }
 }
