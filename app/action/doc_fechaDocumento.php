@@ -19,4 +19,4 @@ $dsHistorico        = $_POST['dsHistorico'];
 //instancia a classe de controle de documento
 $cdoc = new ControlFichaClinica($dsHistoriaClinica, $dsEvolucao, $dsAlergias, $dsDiagInicial, $dsMedicamentoUso, $dsHistorico);
 
-$snUpdDoc = $cdoc->fechaDocumento($cdRegDocumento);
+$snUpdDoc = $cdoc->Fechar($cdRegDocumento);

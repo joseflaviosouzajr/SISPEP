@@ -10,6 +10,6 @@ $form           = $_POST['form'];
 
 $documento = ControlDocumento::returnTableDoc($form);
 
-$snExcluiDoc = $doc->excDocumento($documento, $cdRegDocumento);
+$snExcluiDoc = $doc->Excluir($documento, $cdRegDocumento);
 
 var_dump($snExcluiDoc);

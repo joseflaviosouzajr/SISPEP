@@ -11,7 +11,7 @@ $cdPaciente    = ControlPaciente::returnCdPaciente($cdAtendimento);
 
 $presc = new ControlPrescricao();
 
-$cdPrescricao = $presc->cadPrescricao($cdAtendimento, $cdPaciente);
+$cdPrescricao = $presc->Cadastrar($cdAtendimento, $cdPaciente);
 
 if(gettype($cdPrescricao) == 'integer'){
 

@@ -18,7 +18,7 @@ class ControlFichaClinica extends ModelFichaClinica
     }
 
 
-    public function updDocumento($cdRegDocumento)
+    public function Atualizar($cdRegDocumento)
     {
         //chama a conexao
         $con = Conexao::mysql();
@@ -44,7 +44,7 @@ class ControlFichaClinica extends ModelFichaClinica
             //se conseguir executar a a consulta
             if ($result){
                 //fecha o documento impedindo a edição
-                parent::fechaDocumento("doc_ficha_clinica", $cdRegDocumento);
+                parent::Fechar("doc_ficha_clinica", $cdRegDocumento);
                 return true;
             }
             //se não

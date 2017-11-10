@@ -6,21 +6,45 @@ include_once '../model/ModelPrescricao.php';
 include_once '../control/ControlPrescricao.php';
 include_once '../control/ControlPaciente.php';
 
-$cdAtendimento = $_POST['cdAtendimento'];
+$cdAtendimento = isset($_POST['cdAtendimento']) ? $_POST['cdAtendimento'] : null;
+$cdPrescricao  = (isset($_POST['cdPrescricao']) && !empty($_POST['cdPrescricao'])) ? base64_decode($_POST['cdPrescricao']) : null;
+$cdProduto     = isset($_POST['produto']) ? base64_decode($_POST['produto']) : null;
+
 $cdPaciente    = ControlPaciente::returnCdPaciente($cdAtendimento);
-$cdPrescricao  = $_POST['cdPrescricao'];
-$cdProduto     = base64_decode($_POST['produto']);
+
+//verifica se os parametros foram setados
+if (is_null($cdPrescricao) || is_null($cdAtendimento) || is_null($cdProduto)){
+    echo 'parametros incorretos';
+    exit();
+}
 
 $presc = new ControlPrescricao();
+$presc->setCdPrescricao($cdPrescricao);
 
-$cdPrescricao = $presc->cadPrescricao($cdAtendimento, $cdPaciente);
+//chama o método para adicionar o item a prescrição
+$snItemAdd = $presc->addItemPrescricao($cdProduto);
 
-if(gettype($cdPrescricao) == 'integer'){
 
-    $url = "http://".$_SERVER['HTTP_HOST']."/sispep/app/view/med_viewProntuario.php?p=".base64_encode($cdPaciente)."&a=".base64_encode($cdAtendimento)."&pag=prescricao&doc=".base64_encode($cdPrescricao);
+//verifica o tipo do retorno do método
+if(gettype($snItemAdd) == 'boolean'){
 
-    echo '<script>location.href = "'.$url.'"</script>';
+    //se true
+    if($snItemAdd) {
+        //atualiza a pagina
+        $url = "http://" . $_SERVER['HTTP_HOST'] . "/sispep/app/view/med_viewProntuario.php?p=" . base64_encode($cdPaciente) . "&a=" . base64_encode($cdAtendimento) . "&pag=prescricao&doc=" . base64_encode($cdPrescricao);
 
+        echo '<script>location.href = "' . $url . '"</script>';
+    }
+    //se false
+    else{
+        echo 'não foi possivel adicionar o item';
+    }
 }else{
-    echo $cdPrescricao;
+    //se não for boleano
+    echo '<script>alert("' . $snItemAdd . '");</script>';
+
+    //atualiza a pagina
+    $url = "http://" . $_SERVER['HTTP_HOST'] . "/sispep/app/view/med_viewProntuario.php?p=" . base64_encode($cdPaciente) . "&a=" . base64_encode($cdAtendimento) . "&pag=prescricao&doc=" . base64_encode($cdPrescricao);
+
+    echo '<script>location.href = "' . $url . '"</script>';
 }

@@ -2,11 +2,11 @@
 
 interface intControlDoc{
 
-    public function cadDocumento($documento, $cdAtendimento);
-    public function excDocumento($cdRegDocumento);
-    public function cancelDocumento($documento, $cdRegDocumento);
-    public function updDocumento($cdRegDocumento);
-    public function fechaDocumento($documento,$cdRegDocumento);
+    public function Cadastrar($documento, $cdAtendimento);
+    public function Cancelar($cdRegDocumento);
+    public function Excluir($documento, $cdRegDocumento);
+    public function Atualizar($cdRegDocumento);
+    public function Fechar($documento,$cdRegDocumento);
     public static function snDocumentoFechado($documento);
     public static function snDocumentoCancelado();
 
@@ -14,7 +14,7 @@ interface intControlDoc{
 
 class ControlDocumento extends ModelDocumento
 {
-    public function cadDocumento($documento, $cdAtendimento){
+    public function Cadastrar($documento, $cdAtendimento){
 
         //chama a conexao
         $con = Conexao::mysql();
@@ -51,7 +51,7 @@ class ControlDocumento extends ModelDocumento
 
     }
 
-    public function cancelDocumento($documento, $cdRegDocumento){
+    public function Cancelar($documento, $cdRegDocumento){
         //chama a conexao
         $con = Conexao::mysql();
 
@@ -82,7 +82,7 @@ class ControlDocumento extends ModelDocumento
         }
     }
 
-    public function excDocumento($documento, $cdRegDocumento){
+    public function Excluir($documento, $cdRegDocumento){
         //chama a conexao
         $con = Conexao::mysql();
 
@@ -112,11 +112,11 @@ class ControlDocumento extends ModelDocumento
         }
     }
 
-    public function updDocumento($cdRegDocumento){
+    public function Atualizar($cdRegDocumento){
 
     }
 
-    public function fechaDocumento($documento,$cdRegDocumento){
+    public function Fechar($documento, $cdRegDocumento){
         //chama a conexao
         $con = Conexao::mysql();
 

@@ -23,7 +23,7 @@ if (is_null($documento)){
     exit();
 }
 
-$cdRegDocumento = $cdoc->cadDocumento($documento, $cdAtendimento);
+$cdRegDocumento = $cdoc->Cadastrar($documento, $cdAtendimento);
 
 if(gettype($cdRegDocumento) == 'integer'){
 

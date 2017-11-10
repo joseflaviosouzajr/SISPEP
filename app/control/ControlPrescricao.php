@@ -1,15 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: José Flávio
- * Date: 09/11/2017
- * Time: 18:50
- */
 
 class ControlPrescricao extends ModelPrescricao
 {
 
-    public function cadPrescricao($cdAtendimento, $cdPaciente){
+    public function Cadastrar($cdAtendimento, $cdPaciente){
         //chama a conexao
         $con = Conexao::mysql();
 
@@ -47,20 +41,128 @@ class ControlPrescricao extends ModelPrescricao
         }
     }
 
+    public function Fechar(){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //retorna se a prescrição esta aberta
+        $snPrescricaoAberta = self::snPrescricaoAberta(null, $this->cdPrescricao);
+
+        //se true
+        if($snPrescricaoAberta){
+
+            //busca os dados do documento passado no parametro
+            $sql = "UPDATE g_prescricao SET  sn_fechado = 'S', dh_fechamento = now() WHERE cd_prescricao = :cdPrescricao";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(":cdPrescricao", $this->cdPrescricao);
+            $result = $stmt->execute();
+            //se conseguir executar a a consulta
+            if ($result) {
+                return true;
+            }
+            //se não
+            else {
+                $error = $stmt->errorInfo();
+                return $dsErro = $error[2];
+            }
+
+        }else{
+            return 'prescrição não está aberta';
+        }
+
+    }
+
+    public function Excluir(){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //retorna se a prescrição esta aberta
+        $snPrescricaoAberta = self::snPrescricaoAberta(null, $this->cdPrescricao);
+
+        //se true
+        if($snPrescricaoAberta){
+
+            //busca os dados do documento passado no parametro
+            $sql = "DELETE FROM g_prescricao WHERE cd_prescricao = :cdPrescricao";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(":cdPrescricao", $this->cdPrescricao);
+            $result = $stmt->execute();
+            //se conseguir executar a a consulta
+            if ($result) {
+                return true;
+            }
+            //se não
+            else {
+                $error = $stmt->errorInfo();
+                return $dsErro = $error[2];
+            }
+
+        }else{
+            return 'prescrição não está aberta';
+        }
+
+    }
+
+    public function Cancelar(){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //retorna se a prescrição esta aberta
+        $snPrescricaoAberta = self::snPrescricaoAberta(null, $this->cdPrescricao);
+
+        //se true
+        if(!$snPrescricaoAberta){
+
+            //busca os dados do documento passado no parametro
+            $sql = "UPDATE g_prescricao SET sn_cancelado = 'S', dh_cancelamento = now(), cd_usuario_cancelamento = :cdUsuarioSessao WHERE cd_prescricao = :cdPrescricao";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(":cdPrescricao", $this->cdPrescricao);
+            $stmt->bindParam(":cdUsuarioSessao", $cdUsuarioSessao);
+            $result = $stmt->execute();
+            //se conseguir executar a a consulta
+            if ($result) {
+                return true;
+            }
+            //se não
+            else {
+                $error = $stmt->errorInfo();
+                return $dsErro = $error[2];
+            }
+
+        }else{
+            return 'Prescrição está aberta. Somente prescrições fechadas podem ser canceladas.';
+        }
+
+    }
+
     public static function snPrescricaoAberta($cdAtendimento, $cdPrescricao = null){
         //chama a conexao
         $con = Conexao::mysql();
 
         //busca os dados do documento passado no parametro
-        $sql = "SELECT cd_prescricao FROM g_prescricao WHERE ";
-        $sql .= (!is_null($cdPrescricao)) ? "cd_atendimento = $cdAtendimento" : "cd_prescricao = $cdPrescricao";
+        $sql = "SELECT sn_fechado FROM g_prescricao WHERE ";
+        $sql .= (is_null($cdPrescricao)) ? "cd_atendimento = $cdAtendimento" : "cd_prescricao = $cdPrescricao" ;
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
         if ($result) {
             $num = $stmt->rowCount();
 
-            return ($num > 0) ? true : false;
+            if($num > 0){
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+                return ($reg->sn_fechado == 'S') ? false : true;
+            }else{
+                return 'S';
+            }
         }
         //se não
         else {
@@ -123,7 +225,7 @@ class ControlPrescricao extends ModelPrescricao
 
     }
 
-    public function addItemPrescricao(){
+    public function addItemPrescricao($cdProduto){
 
         //chama a conexao
         $con = Conexao::mysql();
@@ -131,25 +233,23 @@ class ControlPrescricao extends ModelPrescricao
         $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
         //retorna se a prescrição esta aberta
-        $snPrescricaoAberta = self::snPrescricaoAberta(null,$this->cdPrescricao);
+        $snPrescricaoAberta = self::snPrescricaoAberta(null, $this->cdPrescricao);
 
         //se true
         if($snPrescricaoAberta){
-            return 'prescrição já aberta';
-        }else{
 
             //busca os dados do documento passado no parametro
-            $sql = "INSERT INTO g_prescricao (cd_atendimento, cd_paciente, cd_usuario_registro) VALUES (:cdAtendimento, :cdPaciente, :cdUsuarioSessao)";
+            $sql = "INSERT INTO g_it_prescricao (cd_prescricao, cd_produto, cd_usuario_registro) VALUES (:cdPrescricao, :cdProduto, :cdUsuarioSessao)";
             $stmt = $con->prepare($sql);
-            $stmt->bindParam(":cdAtendimento", $cdAtendimento);
-            $stmt->bindParam(":cdPaciente", $cdPaciente);
+            $stmt->bindParam(":cdPrescricao", $this->cdPrescricao);
+            $stmt->bindParam(":cdProduto", $cdProduto);
             $stmt->bindParam(":cdUsuarioSessao", $cdUsuarioSessao);
             $result = $stmt->execute();
             //se conseguir executar a a consulta
             if ($result) {
                 $num = $stmt->rowCount();
                 if($num > 0){
-                    return intval($con->lastInsertId());
+                    return true;
                 }else{
                     return false;
                 }
@@ -159,7 +259,194 @@ class ControlPrescricao extends ModelPrescricao
                 $error = $stmt->errorInfo();
                 return $dsErro = $error[2];
             }
+
+        }else{
+            return 'prescrição não está aberta';
         }
+
+    }
+
+    public function viewItemsPrescricao(){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //busca os dados do documento passado no parametro
+        $sql = "SELECT itp.cd_it_prescricao, p.cd_produto, p.ds_produto, itp.qtd FROM g_it_prescricao itp, g_produto p WHERE itp.cd_prescricao = :cdPrescricao AND itp.cd_produto = p.cd_produto;";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdPrescricao", $this->cdPrescricao);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+            if($num > 0){
+                while ($reg = $stmt->fetch(PDO::FETCH_OBJ)){
+
+                    $cdItemPrescricao   = base64_encode($reg->cd_it_prescricao);
+                    $cdProduto          = base64_encode($reg->cd_produto);
+                    $qtd                = $reg->qtd;
+
+                    echo '
+                        
+                        <div class="item-prescricao">
+                            <div class="item-title" style="padding: 10px; background: #c0c0c0; color: #fff;">
+                            <a href="javascript:void(0)" onclick="excItemPrescricao(\''.$cdItemPrescricao.'\')" style="float: right;">X</a>
+                            '.$reg->ds_produto.'
+                            </div>
+                            <div class="item-body" style="padding: 15px;">
+                                <label>Quantidade:</label>
+                                <br>
+                                <input type="number" name="qtdProduto" min="1" data-produto="'.base64_encode($cdProduto).'" data-cod="'.$cdItemPrescricao.'" value="'.$qtd.'">
+                            </div>
+                        </div>
+                        
+                        ';
+                }
+            }else{
+                echo '<div style="text-align: center; padding: 10px">Nenhum item inserido</div>';
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+
+    }
+
+    public function updItemPrescricao(){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //retorna o numero da prescricao do item
+        $cdPrescricao = ControlPrescricao::returnCdPresc($this->cdItPrescricao);
+
+        //retorna se a prescrição esta aberta
+        $snPrescricaoAberta = self::snPrescricaoAberta(null, $cdPrescricao);
+
+        //se true
+        if($snPrescricaoAberta){
+
+            //busca os dados do documento passado no parametro
+            $sql = "UPDATE g_it_prescricao itp SET itp.qtd = :qtd WHERE itp.cd_it_prescricao = :cdItPrescricao";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(":cdItPrescricao", $this->cdItPrescricao);
+            $stmt->bindParam(":qtd", $this->qtd);
+            $result = $stmt->execute();
+            //se conseguir executar a a consulta
+            if ($result) {
+                return true;
+            }
+            //se não
+            else {
+                $error = $stmt->errorInfo();
+                return $dsErro = $error[2];
+            }
+
+        }else{
+            return 'prescrição não está aberta';
+        }
+
+    }
+
+    public function excItemPrescricao(){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //retorna se a prescrição esta aberta
+        $snPrescricaoAberta = self::snPrescricaoAberta(null, $this->cdPrescricao);
+
+        //se true
+        if($snPrescricaoAberta){
+
+            //busca os dados do documento passado no parametro
+            $sql = "DELETE FROM g_it_prescricao WHERE cd_it_prescricao = :cdItPrescricao";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(":cdItPrescricao", $this->cdItPrescricao);
+            $result = $stmt->execute();
+            //se conseguir executar a a consulta
+            if ($result) {
+                return true;
+            }
+            //se não
+            else {
+                $error = $stmt->errorInfo();
+                return $dsErro = $error[2];
+            }
+
+        }else{
+            return 'prescrição não está aberta';
+        }
+
+    }
+
+    public static function returnAtdPresc($cdPrescricao){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //busca os dados do documento passado no parametro
+        $sql = "SELECT cd_atendimento FROM g_prescricao WHERE cd_prescricao = :cdPrescricao";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdPrescricao", $cdPrescricao);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+            if($num > 0){
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+
+                return $reg->cd_atendimento;
+
+            }else{
+                return false;
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+
+
+    }
+
+    public static function returnCdPresc($cdItPrescricao){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //busca os dados do documento passado no parametro
+        $sql = "SELECT cd_prescricao FROM g_it_prescricao WHERE cd_it_prescricao = :cdItPrescricao";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdItPrescricao", $cdItPrescricao);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+            if($num > 0){
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+
+                return $reg->cd_prescricao;
+
+            }else{
+                return false;
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+
 
     }
 }

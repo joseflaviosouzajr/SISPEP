@@ -10,6 +10,6 @@ $form           = $_POST['form'];
 
 $documento = ControlDocumento::returnTableDoc($form);
 
-$snCancelDoc = $doc->cancelDocumento($documento, $cdRegDocumento);
+$snCancelDoc = $doc->Cancelar($documento, $cdRegDocumento);
 
 var_dump($snCancelDoc);
