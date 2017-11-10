@@ -171,7 +171,7 @@ class ControlDocumento extends ModelDocumento
                     echo '
                         <tr>
                             <td>
-                                <a class="'.$textClass.'" href="'.$url.'" onclick="viewDadosDoc(\''.$documento.'\',\''.$reg->cd_reg_doc.'\')">
+                                <a class="'.$textClass.'" href="'.$url.'">
                                 NOME DO USUARIO
                                 <br> 
                                 '.$reg->dsStatus.'

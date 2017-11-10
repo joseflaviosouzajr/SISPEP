@@ -16,6 +16,7 @@ include_once '../control/ControlDocumento.php';
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="../../lib/css/main.css">
+    <script src="../../lib/plugins/jQuery/jquery-1.12.4.min.js"></script>
     <title>SISPEP | Prontuário do Paciente</title>
 </head>
 <body>
@@ -64,7 +65,7 @@ define("pag_fichaClinica", "fichaClinica");
                     </tr>
                 </table>
             </td>
-            <td>
+            <td valign="top">
                 <?php
 
                 //aguarda o parâmetro de pag para exibir o formulário do documento escolhido no menu
@@ -72,6 +73,10 @@ define("pag_fichaClinica", "fichaClinica");
 
                     case 'fichaClinica':
                         include_once 'pront_docFichaClinica.php';
+                        break;
+
+                    case 'prescricao':
+                        include_once 'med_viewPrescricao.php';
                         break;
 
                     default:
@@ -88,7 +93,6 @@ define("pag_fichaClinica", "fichaClinica");
 <div id="result"></div>
 
 </body>
-<script src="../../lib/plugins/jQuery/jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
 
     <?php if(is_null($cdRegDocumento)){?>
