@@ -123,7 +123,7 @@ class ControlPrescricao extends ModelPrescricao
         if(!$snPrescricaoAberta){
 
             //busca os dados do documento passado no parametro
-            $sql = "UPDATE g_prescricao SET sn_cancelado = 'S', dh_cancelamento = now(), cd_usuario_cancelamento = :cdUsuarioSessao WHERE cd_prescricao = :cdPrescricao";
+            $sql = "UPDATE g_prescricao SET sn_cancelado = 'S', dh_cancelamento = now(), cd_usuario_cancelamento = :cdUsuarioSessao WHERE cd_prescricao = :cdPrescricao; UPDATE g_it_prescricao SET sn_suspenso = 'S', dh_suspenso = now() WHERE cd_prescricao = :cdPrescricao";
             $stmt = $con->prepare($sql);
             $stmt->bindParam(":cdPrescricao", $this->cdPrescricao);
             $stmt->bindParam(":cdUsuarioSessao", $cdUsuarioSessao);
@@ -384,6 +384,115 @@ class ControlPrescricao extends ModelPrescricao
 
         }else{
             return 'prescrição não está aberta';
+        }
+
+    }
+
+    public static function viewListChecagem(){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //busca os dados dos para montar a lista de checagem
+        $sql = "SELECT itp.cd_it_prescricao, pr.cd_atendimento, pr.cd_paciente, pct.nm_paciente, p.cd_produto, pr.dh_fechamento, p.ds_produto, itp.qtd FROM g_it_prescricao itp, g_produto p, g_prescricao pr, g_paciente pct WHERE itp.cd_produto = p.cd_produto AND itp.cd_prescricao = pr.cd_prescricao AND pr.cd_paciente = pct.cd_paciente AND itp.sn_checado = 'N' AND itp.sn_checagem_cancelada = 'N' AND itp.sn_suspenso = 'N';";
+        $stmt = $con->prepare($sql);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+            if($num > 0){
+                while ($reg = $stmt->fetch(PDO::FETCH_OBJ)){
+
+                    $cdItemPrescricao   = base64_encode($reg->cd_it_prescricao);
+                    $qtd                = $reg->qtd;
+
+                    echo '
+                         <tr>
+                            <td>'.$reg->cd_atendimento.'</td>
+                            <td>'.$reg->nm_paciente.'</td>
+                            <td>'.$reg->ds_produto.'</td>
+                            <td>'.$qtd.'</td>
+                            <td>'.$reg->dh_fechamento.'</td>
+                            <td>
+                                <button type="button" onclick="administrarMedicacao(\'DADO\',\''.$cdItemPrescricao.'\')">Administrar</button>
+                                <button type="button" onclick="administrarMedicacao(\'NAO DADO\',\''.$cdItemPrescricao.'\')">Não Administrar</button>
+                            </td>
+                        </tr>
+                        ';
+                }
+            }else{
+                echo '<tr><td style="text-align: center; padding: 10px" colspan="6">Nenhum item inserido</td></tr>';
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+
+    }
+
+    public static function snItemChecado($cdItPrescricao){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //busca os dados do documento passado no parametro
+        $sql = "SELECT sn_checado FROM g_it_prescricao WHERE cd_it_prescricao = :cdItPrescricao AND sn_suspenso = 'N'";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdItPrescricao", $cdItPrescricao);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+
+            if($num > 0){
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+                return ($reg->sn_checado == 'S') ? true : false;
+            }else{
+                return 'S';
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+    }
+
+    public function administrarChecagem($tpChecagem){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //retorna se o item está checado
+        $snChecado = ControlPrescricao::snItemChecado($this->cdItPrescricao);
+
+        //se false
+        if(!$snChecado){
+
+            //atualiza os dados do item da prescrição
+            $sql = "UPDATE g_it_prescricao itp SET itp.sn_checado = 'S', itp.dh_checagem = now(), cd_usuario_checagem = :cdUsuarioSessao, tp_checagem = :tpChecagem WHERE itp.cd_it_prescricao = :cdItPrescricao";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(":cdItPrescricao", $this->cdItPrescricao);
+            $stmt->bindParam(":cdUsuarioSessao", $cdUsuarioSessao);
+            $stmt->bindParam(":tpChecagem", $tpChecagem);
+            $result = $stmt->execute();
+            //se conseguir executar a a consulta
+            if ($result) {
+                return true;
+            }
+            //se não
+            else {
+                $error = $stmt->errorInfo();
+                return $dsErro = $error[2];
+            }
+
+        }else{
+            return 'item já está checado';
         }
 
     }

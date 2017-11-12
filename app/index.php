@@ -27,7 +27,8 @@
         <td align="center" valign="middle">
             <h2><a href="view/med_viewListAtendimento.php">ATENDIMENTO<br>MÉDICO</a></h2>
         </td>
-        <td>
+        <td align="center" valign="middle">
+            <h2><a href="view/enf_viewListaChecagem.php">CHECAGEM<br>MEDICACAO</a></h2>
         </td>
     </tr>
 </table>
