@@ -5,6 +5,8 @@ include_once '../model/ModelPaciente.php';
 include_once '../model/ModelPrescricao.php';
 include_once '../control/ControlPrescricao.php';
 include_once '../control/ControlPaciente.php';
+include_once '../model/ModelFarmacia.php';
+include_once '../control/ControlFarmacia.php';
 
 $cdPrescricao = (isset($_POST['cdPrescricao']) && !empty($_POST['cdPrescricao'])) ? base64_decode($_POST['cdPrescricao']) : null;
 
@@ -24,6 +26,10 @@ $cdPaciente    = ControlPaciente::returnCdPaciente($cdAtendimento);
 //var_dump($snFechaPrescricao);
 
 if(gettype($snFechaPrescricao) == 'boolean'){
+
+    $farm = new ControlFarmacia();
+    $farm->setCdPrescricao($cdPrescricao);
+    $farm->Cadastrar();
 
     if($snFechaPrescricao) {
 

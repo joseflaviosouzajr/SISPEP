@@ -161,7 +161,7 @@ class ControlPrescricao extends ModelPrescricao
                 $reg = $stmt->fetch(PDO::FETCH_OBJ);
                 return ($reg->sn_fechado == 'S') ? false : true;
             }else{
-                return 'S';
+                return false;
             }
         }
         //se não
@@ -396,7 +396,7 @@ class ControlPrescricao extends ModelPrescricao
         $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
         //busca os dados dos para montar a lista de checagem
-        $sql = "SELECT itp.cd_it_prescricao, pr.cd_atendimento, pr.cd_paciente, pct.nm_paciente, p.cd_produto, pr.dh_fechamento, p.ds_produto, itp.qtd FROM g_it_prescricao itp, g_produto p, g_prescricao pr, g_paciente pct WHERE itp.cd_produto = p.cd_produto AND itp.cd_prescricao = pr.cd_prescricao AND pr.cd_paciente = pct.cd_paciente AND itp.sn_checado = 'N' AND itp.sn_checagem_cancelada = 'N' AND itp.sn_suspenso = 'N';";
+        $sql = "SELECT itp.cd_it_prescricao, pr.cd_atendimento, pr.cd_paciente, pct.nm_paciente, p.cd_produto, pr.dh_fechamento, p.ds_produto, itp.qtd FROM g_it_prescricao itp, g_produto p, g_prescricao pr, g_paciente pct, farm_sol_prod sol WHERE itp.cd_produto = p.cd_produto AND itp.cd_prescricao = pr.cd_prescricao AND pr.cd_paciente = pct.cd_paciente AND sol.cd_prescricao = pr.cd_prescricao AND itp.sn_checado = 'N' AND itp.sn_checagem_cancelada = 'N' AND itp.sn_suspenso = 'N' AND sol.sn_atendida = 'S';";
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
