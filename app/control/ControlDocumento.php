@@ -153,7 +153,7 @@ class ControlDocumento extends ModelDocumento
         $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
         //exibe a lista de pacientes cadastrados sem atendimentos
-        $sql = "SELECT cd_reg_doc, dh_registro, CASE WHEN sn_fechado = 'S' AND sn_cancelado = 'N' THEN 'FECHADO' WHEN sn_fechado = 'N' AND sn_cancelado = 'N' THEN 'EM ABERTO' WHEN sn_cancelado = 'S' THEN 'CANCELADO' ELSE '' END dsStatus, cd_atendimento FROM $documento WHERE cd_atendimento IN (SELECT cd_atendimento FROM g_atendimento WHERE cd_paciente = :cdPaciente)";
+        $sql = "SELECT cd_reg_doc, dh_registro, CASE WHEN sn_fechado = 'S' AND sn_cancelado = 'N' THEN 'FECHADO' WHEN sn_fechado = 'N' AND sn_cancelado = 'N' THEN 'EM ABERTO' WHEN sn_cancelado = 'S' THEN 'CANCELADO' ELSE '' END dsStatus, cd_atendimento FROM $documento WHERE cd_atendimento IN (SELECT cd_atendimento FROM g_atendimento WHERE cd_paciente = :cdPaciente) ORDER BY cd_reg_doc DESC";
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":cdPaciente", $cdPaciente);
         $result = $stmt->execute();
@@ -234,11 +234,15 @@ class ControlDocumento extends ModelDocumento
 
     }
 
-//retorna o nome da tabela a partir do formulario
+    //retorna o nome da tabela a partir do formulario
     public static function returnTableDoc($form){
         switch ($form){
             case 'formFichaClinica':
                 $documento = 'doc_ficha_clinica';
+                break;
+
+            case 'formBoletimAlta':
+                $documento = 'doc_boletim_alta';
                 break;
 
             default:
@@ -249,11 +253,14 @@ class ControlDocumento extends ModelDocumento
         return $documento;
     }
 
-//retorna a pagina do documento a partir da tabela
+    //retorna a pagina do documento a partir da tabela
     public static function returnPagDoc($table){
         switch ($table){
             case 'doc_ficha_clinica':
                 $pag = 'fichaClinica';
+                break;
+            case 'doc_boletim_alta':
+                $pag = 'boletimAlta';
                 break;
 
             default:
@@ -262,5 +269,36 @@ class ControlDocumento extends ModelDocumento
         }
 
         return $pag;
+    }
+
+    //retorna o atendimento do documento
+    public static function returnAtdDoc($documento, $cdRegDocumento){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //exibe a lista de pacientes cadastrados sem atendimentos
+        $sql = "SELECT cd_atendimento FROM $documento WHERE cd_reg_doc = :cdRegDocumento";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdRegDocumento",$cdRegDocumento);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result){
+            $num = $stmt->rowCount();
+            if($num > 0){
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+                return $reg->cd_atendimento;
+            }else{
+                return 'S';
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+
     }
 }

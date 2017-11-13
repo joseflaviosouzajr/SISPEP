@@ -62,6 +62,53 @@ class ControlPaciente extends ModelPaciente
 
     }
 
+    public function realizarAlta($cdAtendimento){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //exibe a lista de pacientes cadastrados sem atendimentos
+        $sql = "UPDATE g_atendimento SET sn_alta = 'S', dh_alta = now(), cd_usuario_alta = :cdUsuarioSessao WHERE cd_atendimento = :cdAtendimento";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdAtendimento", $cdAtendimento);
+        $stmt->bindParam(":cdUsuarioSessao", $cdUsuarioSessao);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result){
+            return true;
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+    }
+
+
+    public function removeAlta($cdAtendimento){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        //exibe a lista de pacientes cadastrados sem atendimentos
+        $sql = "UPDATE g_atendimento SET sn_alta = 'N', dh_alta = null, cd_usuario_alta = null WHERE cd_atendimento = :cdAtendimento";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdAtendimento", $cdAtendimento);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result){
+            return true;
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+    }
+
+
     public static function listAguardaCadPaciente(){
 
         //chama a conexao
@@ -120,7 +167,7 @@ class ControlPaciente extends ModelPaciente
         $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
 
         //exibe a lista de pacientes cadastrados sem atendimentos gerados do dia
-        $sql = "SELECT a.cd_paciente, a.cd_atendimento, p.nm_paciente, a.dh_atendimento FROM g_atendimento a, g_paciente p WHERE a.cd_paciente = p.cd_paciente AND a.sn_alta = 'N'";
+        $sql = "SELECT a.cd_paciente, a.cd_atendimento, p.nm_paciente, a.dh_atendimento FROM g_atendimento a, g_paciente p WHERE a.cd_paciente = p.cd_paciente ";
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
@@ -259,30 +306,30 @@ class ControlPaciente extends ModelPaciente
 }
 
 
-public function iniciaAtendimentoPaciente(){
+    public function iniciaAtendimentoPaciente(){
 
-    //chama a conexao
-    $con = Conexao::mysql();
+        //chama a conexao
+        $con = Conexao::mysql();
 
-    //pega usuário logado
-    $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
+        //pega usuário logado
+        $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
 
-    //insere um novo atendimento para o paciente
-    $sql = "INSERT INTO g_atendimento (cd_paciente, cd_usuario_registro) VALUES (:cdPaciente, :cdUsuario)";
-    $stmt = $con->prepare($sql);
-    $stmt->bindParam(":cdPaciente", $this->cdPaciente);
-    $stmt->bindParam(":cdUsuario", $cdUsuarioSessao);
-    $result = $stmt->execute();
-    //se conseguir executar a a consulta
-    if ($result){
-        return true;
+        //insere um novo atendimento para o paciente
+        $sql = "INSERT INTO g_atendimento (cd_paciente, cd_usuario_registro) VALUES (:cdPaciente, :cdUsuario)";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdPaciente", $this->cdPaciente);
+        $stmt->bindParam(":cdUsuario", $cdUsuarioSessao);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result){
+            return true;
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+
     }
-    //se não
-    else {
-        $error = $stmt->errorInfo();
-        return $dsErro = $error[2];
+
     }
-
-}
-
-}

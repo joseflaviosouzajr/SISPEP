@@ -39,6 +39,7 @@ $pct->dadosPaciente($cdPaciente);
 $nmPaciente = $pct->getNmPessoa();
 
 define("pag_fichaClinica", "fichaClinica");
+define("pag_boletimAlta", "boletimAlta");
 ?>
 <section>
     <div>
@@ -77,6 +78,10 @@ define("pag_fichaClinica", "fichaClinica");
 
                     case 'prescricao':
                         include_once 'med_viewPrescricao.php';
+                        break;
+
+                    case 'boletimAlta':
+                        include_once 'pront_docBoletimAlta.php';
                         break;
 
                     default:
