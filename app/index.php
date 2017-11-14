@@ -35,6 +35,12 @@
         <td align="center" valign="middle">
             <h2><a href="view/enf_viewListaChecagem.php">CHECAGEM<br>MEDICACAO</a></h2>
         </td>
+        <td align="center" valign="middle">
+            <h2><a href="view/g_viewUsuario.php">USUARIOS</a></h2>
+        </td>
+        <td align="center" valign="middle">
+            <h2><a href="view/g_viewProduto.php">PRODUTOS</a></h2>
+        </td>
     </tr>
 </table>
 </body>

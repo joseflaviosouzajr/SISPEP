@@ -1,6 +1,6 @@
 <?php
 
-class modelPessoa
+class ModelPessoa
 {
     public $nmPessoa;
     public $dtNascimento;
