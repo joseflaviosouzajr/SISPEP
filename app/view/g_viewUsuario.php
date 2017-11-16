@@ -15,16 +15,19 @@ include_once '../control/ControlUsuario.php';
     <title>SISPEP | Lista de Usuários</title>
 </head>
 <body>
-<?php include_once 'navbar.php';?>
+<?php
+include_once 'navbar.php';
+$dsBusca = isset($_GET['dsBusca']) ? $_GET['dsBusca'] : null;
+?>
 <section>
     <div>
         <h1 align="center">Lista para checagem</h1>
     </div>
     <hr>
 
-    <form>
+    <form method="get" action="g_viewUsuario.php">
         <label>Digite para buscar: </label>
-        <input type="text" name="dsBuscaUsuario" />
+        <input type="text" name="dsBusca" />
         <button type="submit">Buscar</button>
         <a href="g_viewCadUsuario.php">+ Novo Usuário</a>
     </form>
@@ -41,7 +44,7 @@ include_once '../control/ControlUsuario.php';
         </tr>
         </thead>
         <tbody>
-        <?php ControlUsuario::Lista();  ?>
+        <?php ControlUsuario::Lista($dsBusca);  ?>
         </tbody>
     </table>
 </section>

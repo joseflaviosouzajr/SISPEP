@@ -1,5 +1,8 @@
 <?php
 include_once '../conf/Conexao.php';
+include_once '../model/ModelPessoa.php';
+include_once '../model/ModelUsuario.php';
+include_once '../control/ControlUsuario.php';
 ?>
 <!doctype html>
 <!--suppress ALL -->
@@ -12,22 +15,41 @@ include_once '../conf/Conexao.php';
     <title>SISPEP | Cadastro de Usuários</title>
 </head>
 <body>
-<?php include_once 'navbar.php';?>
+<?php
+include_once 'navbar.php';
+
+$user = new ControlUsuario();
+
+//verifica se o parametro de usuário foi passado na página
+$cdUsuario = isset($_GET['u']) ? base64_decode($_GET['u']) : null;
+
+//se sim
+if(!is_null($cdUsuario)){
+    $user->setCdUsuario($cdUsuario);
+    //chama o construtor genérico do classe usuário
+    $user->Dados();
+
+    //atribui o valor dos métodos as suas respectivas variáveis
+    $nmUsuario  = $user->getNmPessoa();
+    $login      = $user->getLogin();
+}
+?>
 <section>
     <div>
         <h1 align="center">Cadastro de Usuário</h1>
     </div>
 
     <form method="post" id="formCadUsuario">
+        <input type="hidden" name="cdUsuario" value="<?php echo $cdUsuario; ?>">
         <fieldset>
             <table>
                 <tr>
                     <td><label>Nome do usuário: </label></td>
-                    <td><input type="text" name="nmUsuario" /></td>
+                    <td><input type="text" name="nmUsuario" value="<?php echo $nmUsuario;?>" /></td>
                 </tr>
                 <tr>
                     <td><label>Login: </label></td>
-                    <td><input type="text" name="login" /></td>
+                    <td><input type="text" name="login" value="<?php echo $login;?>" /></td>
                 </tr>
                 <tr>
                     <td><label>Senha: </label></td>
@@ -59,9 +81,18 @@ include_once '../conf/Conexao.php';
 <script type="text/javascript">
 
     $("#formCadUsuario").submit(function(){
+
+        var cdUser = $(this).find("input[name=cdUsuario]").val();
+
+        if(cdUser != null){
+            var url = '../action/g_updUsuario.php';
+        }else{
+            var url = '../action/g_cadUsuario.php';
+        }
+
         $.ajax({
             type: 'POST',
-            url: '../action/g_cadUsuario.php',
+            url: url,
             data: $(this).serialize(),
             success: function (data) {
                 $("#result").html(data);

@@ -2,11 +2,11 @@
 
 class ModelUsuario extends ModelPessoa
 {
-
     public $cdUsuario;
     public $dsSenha;
     public $snAtivo;
     public $cdPerfilUser;
+    public $login;
 
 
     public function getCdUsuario()
@@ -49,6 +49,22 @@ class ModelUsuario extends ModelPessoa
     public function setCdPerfilUser($cdPerfilUser)
     {
         $this->cdPerfilUser = $cdPerfilUser;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+    /**
+     * @param mixed $login
+     */
+    public function setLogin($login)
+    {
+        $this->login = $login;
     }
 
 

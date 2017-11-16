@@ -48,12 +48,88 @@ class ControlUsuario extends ModelUsuario
 
     }
 
+    public function Dados(){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        $cdUsuario = self::returnCdUsuario();
+
+        if($cdUsuario > 0){
+            return 'Login já existe. Por favor, escolha outro.';
+        }else{
+
+            //seleciona o usuário pelo login
+            $sql = "SELECT * FROM g_usuario WHERE cd_usuario = :cdUsuario";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(":cdUsuario", $this->cdUsuario);
+            $result = $stmt->execute();
+            //se conseguir executar a a consulta
+            if ($result) {
+                $num = $stmt->rowCount();
+                if($num > 0){
+                    $reg = $stmt->fetch(PDO::FETCH_OBJ);
+                    parent::setNmPessoa($reg->nm_usuario);
+                    parent::setLogin($reg->login);
+                }else{
+                    return false;
+                }
+            }
+            //se não
+            else {
+                $error = $stmt->errorInfo();
+                return $dsErro = $error[2];
+            }
+
+        }
+
+    }
+
+    public function Atualizar(){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+
+        $cdUsuario = self::returnCdUsuario();
+
+        if($cdUsuario > 0){
+            return 'Login já existe. Por favor, escolha outro.';
+        }else{
+
+            //seleciona o usuário pelo login
+            $sql = "UPDATE g_usuario SET nm_usuario = :nmUsuario, login = :login, ds_senha = :dsSenha WHERE cd_usuario = :cdUsuario";
+            $stmt = $con->prepare($sql);
+            $stmt->bindParam(":cdUsuario", $this->cdUsuario);
+            $stmt->bindParam(":nmUsuario", $this->nmUsuario);
+            $stmt->bindParam(":login", $this->login);
+            $stmt->bindParam(":dsSenha", $this->dsSenha);
+            $result = $stmt->execute();
+            //se conseguir executar a a consulta
+            if ($result) {
+
+                return true;
+
+            }
+            //se não
+            else {
+                $error = $stmt->errorInfo();
+                return $dsErro = $error[2];
+            }
+
+        }
+
+    }
+
     public static function Lista($dsBusca=null){
         //chama a conexao
         $con = Conexao::mysql();
 
         //seleciona o usuário pelo login
-        $sql = "SELECT cd_usuario, nm_usuario, login, sn_ativo, cd_perfil FROM g_usuario ORDER BY nm_usuario ASC";
+        $sql = "SELECT cd_usuario, nm_usuario, login, sn_ativo, cd_perfil FROM g_usuario ";
+        $sql .= (!is_null($dsBusca)) ? " WHERE nm_usuario LIKE '%".$dsBusca."%'" : " ";
+        $sql .= "ORDER BY nm_usuario ASC";
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
@@ -69,7 +145,7 @@ class ControlUsuario extends ModelUsuario
                     <td>'.$reg->cd_perfil.'</td>
                     <td>'.$reg->sn_ativo.'</td>
                     <td align="center">
-                    <button type="button">Editar</button>
+                    <a href="g_viewCadUsuario.php?u='.base64_encode($reg->cd_usuario).'">Editar</a>
                     <button type="button">Excluir</button>
                     </td>
                     </tr>
