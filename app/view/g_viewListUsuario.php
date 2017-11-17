@@ -25,7 +25,7 @@ $dsBusca = isset($_GET['dsBusca']) ? $_GET['dsBusca'] : null;
     </div>
     <hr>
 
-    <form method="get" action="g_viewUsuario.php">
+    <form method="get" action="g_viewListUsuario.php">
         <label>Digite para buscar: </label>
         <input type="text" name="dsBusca" />
         <button type="submit">Buscar</button>
@@ -54,34 +54,23 @@ $dsBusca = isset($_GET['dsBusca']) ? $_GET['dsBusca'] : null;
 <script src="../../lib/plugins/jQuery/jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
 
-    function administrarMedicacao(tp, cd){
+    function desativarUser(u){
 
-        if(tp == 'DADO'){
-            var confirmAdmMedicacao = confirm("Tem certeza que deseja checar a medicação como DADO?");
-        }else if (tp == 'NAO DADO'){
-            var confirmAdmMedicacao = confirm("Tem certeza que deseja checar a medicação como NÃO DADO?");
-        }else{
-            alert("Parametro de checagem incorreto!");
-            exit();
-        }
+        var confirmDesatv = confirm("Tem certeza que deseja inativar este usuário?");
 
-        if(confirmAdmMedicacao == true){
+        if(confirmDesatv){
+
             $.ajax({
                 type: 'POST',
-                url: '../action/enf_administrarMedicacao.php',
+                url: '../action/g_desativarUsuario.php',
                 data: {
-                    tpChecagem: tp,
-                    cdItPrescricao: cd
-
+                    cdUsuario: u
                 },
                 success: function (data) {
                     $("#result").html(data);
                 }
             });
-        }else{
-
         }
-
     }
 
 </script>

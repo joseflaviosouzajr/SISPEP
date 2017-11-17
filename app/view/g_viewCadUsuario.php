@@ -23,15 +23,21 @@ $user = new ControlUsuario();
 //verifica se o parametro de usuário foi passado na página
 $cdUsuario = isset($_GET['u']) ? base64_decode($_GET['u']) : null;
 
+$nmUsuario    = null;
+$login        = null;
+$cdPerfilUser = 0;
+
 //se sim
 if(!is_null($cdUsuario)){
     $user->setCdUsuario($cdUsuario);
+
     //chama o construtor genérico do classe usuário
     $user->Dados();
 
     //atribui o valor dos métodos as suas respectivas variáveis
     $nmUsuario  = $user->getNmPessoa();
     $login      = $user->getLogin();
+    $cdPerfilUser = $user->getCdPerfilUser();
 }
 ?>
 <section>
@@ -63,7 +69,8 @@ if(!is_null($cdUsuario)){
                     <td><label>Perfil: </label></td>
                     <td>
                         <select name="cdTpPerfil">
-
+                            <option></option>
+                            <?php ControlUsuario::listOptionPerfilUser($cdPerfilUser); ?>
                         </select>
                     </td>
                 </tr>
@@ -84,7 +91,7 @@ if(!is_null($cdUsuario)){
 
         var cdUser = $(this).find("input[name=cdUsuario]").val();
 
-        if(cdUser != null){
+        if(cdUser > 0){
             var url = '../action/g_updUsuario.php';
         }else{
             var url = '../action/g_cadUsuario.php';
