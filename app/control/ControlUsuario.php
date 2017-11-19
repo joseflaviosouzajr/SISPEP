@@ -53,37 +53,28 @@ class ControlUsuario extends ModelUsuario
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
-
-        $cdUsuario = self::returnCdUsuario();
-
-        if($cdUsuario > 0){
-            return 'Login já existe. Por favor, escolha outro.';
-        }else{
-
-            //seleciona o usuário pelo login
-            $sql = "SELECT * FROM g_usuario WHERE cd_usuario = :cdUsuario";
-            $stmt = $con->prepare($sql);
-            $stmt->bindParam(":cdUsuario", $this->cdUsuario);
-            $result = $stmt->execute();
-            //se conseguir executar a a consulta
-            if ($result) {
-                $num = $stmt->rowCount();
-                if($num > 0){
-                    $reg = $stmt->fetch(PDO::FETCH_OBJ);
-                    parent::setNmPessoa($reg->nm_usuario);
-                    parent::setLogin($reg->login);
-                    parent::setCdPerfilUser($reg->cd_perfil_user);
-                }else{
-                    return false;
-                }
+        //seleciona o usuário pelo login
+        $sql = "SELECT * FROM g_usuario WHERE cd_usuario = :cdUsuario";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdUsuario", $this->cdUsuario);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+            if($num > 0){
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+                parent::setNmPessoa($reg->nm_usuario);
+                parent::setLogin($reg->login);
+                parent::setCdPerfilUser($reg->cd_perfil_user);
+                parent::setSnAtivo($reg->sn_ativo);
+            }else{
+                return false;
             }
-            //se não
-            else {
-                $error = $stmt->errorInfo();
-                return $dsErro = $error[2];
-            }
-
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
         }
 
     }
@@ -131,22 +122,22 @@ class ControlUsuario extends ModelUsuario
 
         $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
-            //seleciona o usuário pelo login
-            $sql = "UPDATE g_usuario SET sn_ativo = 'N' WHERE cd_usuario = :cdUsuario";
-            $stmt = $con->prepare($sql);
-            $stmt->bindParam(":cdUsuario", $this->cdUsuario);
-            $result = $stmt->execute();
-            //se conseguir executar a a consulta
-            if ($result) {
+        //seleciona o usuário pelo login
+        $sql = "UPDATE g_usuario SET sn_ativo = 'N' WHERE cd_usuario = :cdUsuario";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdUsuario", $this->cdUsuario);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
 
-                return true;
+            return true;
 
-            }
-            //se não
-            else {
-                $error = $stmt->errorInfo();
-                return $dsErro = $error[2];
-            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
 
     }
 
@@ -254,6 +245,65 @@ class ControlUsuario extends ModelUsuario
                 return intval($reg->cd_usuario);
             }else{
                 return 0;
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+
+    }
+
+    public function validaAcesso(){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //seleciona o usuário pelo login
+        $sql = "SELECT cd_usuario FROM g_usuario WHERE login = :login AND ds_senha = :dsSenha";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":login", $this->login);
+        $stmt->bindParam(":dsSenha", $this->dsSenha);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+            if($num > 0){
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+
+                return intval($reg->cd_usuario);
+            }else{
+                return 0;
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+
+    }
+
+    public static function returnDsPerfil($cdPerfilUser){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //seleciona o usuário pelo login
+        $sql = "SELECT ds_perfil_user FROM g_perfil_user WHERE cd_perfil_user = :cdPerfilUser";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdPerfilUser", $cdPerfilUser);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+            if($num > 0){
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+
+                return $reg->ds_perfil_user;
+            }else{
+                return '';
             }
         }
         //se não

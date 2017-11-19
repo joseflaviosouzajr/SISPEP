@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+$cdUsuario = $_SESSION['cdUsuario'];
+$nmUsuario = $_SESSION['nmUsuario'];
+$dsPerfilUser = $_SESSION['dsPerfilUser'];
+
+?>
 <!doctype html>
 <html lang="pt-br">
 <head>
@@ -8,6 +16,7 @@
     <title>SISPEP | Lista Cadastro Paciente</title>
 </head>
 <body>
+<?php include_once 'view/navbar.php'?>
 <table width="100%" BORDER="1">
     <tr>
         <td align="center" valign="middle" width="33%">

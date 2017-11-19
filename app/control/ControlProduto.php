@@ -28,4 +28,20 @@ class ControlProduto extends ModelProduto
         }
     }
 
+    public function Cadastrar(){
+
+    }
+
+    public function Alterar(){
+
+    }
+
+    public function Excluir(){
+
+    }
+
+    public function Listar(){
+
+    }
+
 }
