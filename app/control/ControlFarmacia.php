@@ -34,7 +34,7 @@ class ControlFarmacia extends ModelFarmacia
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //exibe a lista de pacientes cadastrados sem atendimentos gerados do dia
         $sql = "UPDATE farm_sol_prod SET sn_atendida = 'S', dh_atendida = now(), cd_usuario_atend = :cdUsuarioSessao WHERE cd_sol_prod = :cdSolProd";
@@ -44,7 +44,6 @@ class ControlFarmacia extends ModelFarmacia
         $result = $stmt->execute();
         //se conseguir executar a a consulta
         if ($result){
-
             return true;
         }
         //se não

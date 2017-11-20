@@ -119,7 +119,7 @@ class PerfilUser extends MenuUsuario {
                 <h2><a href="view/g_viewListUsuario.php">USUARIOS</a></h2>
             </td>
             <td align="center" valign="middle">
-                <h2><a href="view/g_viewProduto.php">PRODUTOS</a></h2>
+                <h2><a href="view/g_viewListProduto.php">PRODUTOS</a></h2>
             </td>
         </tr>
         <?php

@@ -1,8 +1,7 @@
 <?php
 include_once '../conf/Conexao.php';
-include_once '../model/ModelPessoa.php';
-include_once '../model/ModelUsuario.php';
-include_once '../control/ControlUsuario.php';
+include_once '../model/ModelProduto.php';
+include_once '../control/ControlProduto.php';
 ?>
 <!doctype html>
 <!--suppress ALL -->
@@ -21,30 +20,29 @@ $dsBusca = isset($_GET['dsBusca']) ? $_GET['dsBusca'] : null;
 ?>
 <section>
     <div>
-        <h1 align="center">Lista de Usuários</h1>
+        <h1 align="center">Lista de Produtos</h1>
     </div>
     <hr>
 
-    <form method="get" action="g_viewListUsuario.php">
+    <form method="get" action="g_viewListProduto.php">
         <label>Digite para buscar: </label>
         <input type="text" name="dsBusca" />
         <button type="submit">Buscar</button>
-        <a href="g_viewCadUsuario.php">+ Novo Usuário</a>
+        <a href="g_viewCadProduto.php">+ Novo Produto</a>
     </form>
     <br/>
     <table border="1" width="100%">
         <thead>
         <tr>
             <th align="center">Cód.</th>
-            <th align="center">Nome do Usuário</th>
-            <th align="center">Login</th>
-            <th align="center">Perfil</th>
+            <th align="center">Nome do Produto</th>
+            <th align="center">Saldo</th>
             <th align="center">Ativo?</th>
             <th align="center">Ação</th>
         </tr>
         </thead>
         <tbody>
-        <?php ControlUsuario::Listar($dsBusca);  ?>
+        <?php ControlProduto::Listar($dsBusca);  ?>
         </tbody>
     </table>
 </section>
@@ -54,17 +52,17 @@ $dsBusca = isset($_GET['dsBusca']) ? $_GET['dsBusca'] : null;
 <script src="../../lib/plugins/jQuery/jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
 
-    function desativarUser(u){
+    function desativarProduto(p){
 
-        var confirmDesatv = confirm("Tem certeza que deseja inativar este usuário?");
+        var confirmDesatv = confirm("Tem certeza que deseja inativar este produto?");
 
         if(confirmDesatv){
 
             $.ajax({
                 type: 'POST',
-                url: '../action/g_desativarUsuario.php',
+                url: '../action/g_desativarProduto.php',
                 data: {
-                    cdUsuario: u
+                    cdProduto: p
                 },
                 success: function (data) {
                     $("#result").html(data);

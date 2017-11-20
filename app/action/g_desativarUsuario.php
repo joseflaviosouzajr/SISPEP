@@ -11,7 +11,7 @@ $cUser      = new ControlUsuario();
 $cUser->setCdUsuario($cdUsuario);
 
 //chama o método para desativar o usuário
-$snUsuarioDesativado = $cUser->desativarUsuario();
+$snUsuarioDesativado = $cUser->Desativar();
 
 var_dump($snUsuarioDesativado);
 ?>

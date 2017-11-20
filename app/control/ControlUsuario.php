@@ -83,8 +83,6 @@ class ControlUsuario extends ModelUsuario
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
-
         $cdUsuario = self::validaLogin();
 
         if($cdUsuario > 0){
@@ -116,11 +114,9 @@ class ControlUsuario extends ModelUsuario
 
     }
 
-    public function desativarUsuario(){
+    public function Desativar(){
         //chama a conexao
         $con = Conexao::mysql();
-
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
         //seleciona o usuário pelo login
         $sql = "UPDATE g_usuario SET sn_ativo = 'N' WHERE cd_usuario = :cdUsuario";
@@ -141,7 +137,7 @@ class ControlUsuario extends ModelUsuario
 
     }
 
-    public static function Lista($dsBusca=null){
+    public static function Listar($dsBusca=null){
         //chama a conexao
         $con = Conexao::mysql();
 
