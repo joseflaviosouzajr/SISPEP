@@ -1,6 +1,10 @@
 <?php
+interface interfControlFarmacia{
+    public function Cadastrar($cdAtendimento, $cdPaciente);
+    public function atenderSolicitacao();
+}
 
-class ControlFarmacia extends ModelFarmacia
+class ControlFarmacia extends ModelFarmacia implements interfControlFarmacia
 {
 
     public function Cadastrar($cdAtendimento="", $cdPaciente="")

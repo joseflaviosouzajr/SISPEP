@@ -1,9 +1,9 @@
 <?php
 
-interface intControlDoc{
+interface interfControlDoc{
 
     public function Cadastrar($documento, $cdAtendimento);
-    public function Cancelar($cdRegDocumento);
+    public function Cancelar($cdRegDocumento, $cdRegDocumento);
     public function Excluir($documento, $cdRegDocumento);
     public function Atualizar($cdRegDocumento);
     public function Fechar($documento,$cdRegDocumento);
@@ -12,7 +12,7 @@ interface intControlDoc{
 
 }
 
-class ControlDocumento extends ModelDocumento
+class ControlDocumento extends ModelDocumento implements interfControlDoc
 {
     public function Cadastrar($documento, $cdAtendimento){
 

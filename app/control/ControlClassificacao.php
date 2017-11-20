@@ -1,6 +1,9 @@
 <?php
+interface interfControlClassificacao{
+    public function Cadastrar($cdTotem);
+}
 
-class ControlClassificacao extends ModelClassificacao
+class ControlClassificacao extends ModelClassificacao implements interfControlClassificacao
 {
 
     public function __construct($dsDiagnostico,$peso,$pa,$ps,$temp,$fc,$fr,$cor,$dor){

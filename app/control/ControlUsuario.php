@@ -1,6 +1,15 @@
 <?php
+interface interControlUsuario{
+    public function Cadastrar();
+    public function Dados();
+    public function Atualizar();
+    public function Desativar();
+    public function returnCdUsuario();
+    public function validaLogin();
+    public function validaAcesso();
+}
 
-class ControlUsuario extends ModelUsuario
+class ControlUsuario extends ModelUsuario implements interControlUsuario
 {
 
     public function __construct($nmUsuario="", $login="", $senha=""){

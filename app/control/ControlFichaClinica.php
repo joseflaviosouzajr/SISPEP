@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: José Flávio
- * Date: 08/11/2017
- * Time: 10:42
- */
 
 class ControlFichaClinica extends ModelFichaClinica
 {

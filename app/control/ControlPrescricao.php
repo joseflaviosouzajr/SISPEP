@@ -1,6 +1,17 @@
 <?php
+interface interfControlPrescricao{
+    public function Cadastrar($cdAtendimento, $cdPaciente);
+    public function Fechar();
+    public function Excluir();
+    public function Cancelar();
+    public function addItemPrescricao($cdProduto);
+    public function administrarChecagem($tpChecagem);
+    public function viewItemsPrescricao();
+    public function updItemPrescricao();
+    public function excItemPrescricao();
+}
 
-class ControlPrescricao extends ModelPrescricao
+class ControlPrescricao extends ModelPrescricao implements interfControlPrescricao
 {
 
     public function Cadastrar($cdAtendimento, $cdPaciente){

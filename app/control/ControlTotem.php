@@ -1,18 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: José Flávio
- * Date: 31/10/2017
- * Time: 09:18
- */
 
-interface intfControlTotem
+interface interfControlTotem
 {
     public function retirarSenha();
-    public function getUltimoTotem();
-    public function listaAtdClassif();
+    public function getDadosTotem($cdTotem);
 }
-class ControlTotem extends ModelTotem
+class ControlTotem extends ModelTotem implements interfControlTotem
 {
     public function retirarSenha()
     {

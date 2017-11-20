@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: José Flávio
- * Date: 12/11/2017
- * Time: 16:00
- */
 
 class ControlBoletimAlta extends ModelBoletimAlta
 

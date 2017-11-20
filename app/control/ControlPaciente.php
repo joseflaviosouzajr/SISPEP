@@ -1,10 +1,10 @@
 <?php
-interface intfControlPaciente{
+interface interfControlPaciente{
     public function Cadatrar();
     public function Atualizar();
     public function Excluir();
 }
-class ControlPaciente extends ModelPaciente
+class ControlPaciente extends ModelPaciente implements interfControlPaciente
 {
 
     //consutrutor da classe. Como a classe ControlPaciente herda os atributos da classe ModelPaciente, utilizaremos o mesmo construto.
@@ -85,7 +85,6 @@ class ControlPaciente extends ModelPaciente
         }
     }
 
-
     public function removeAlta($cdAtendimento){
         //chama a conexao
         $con = Conexao::mysql();
@@ -107,7 +106,6 @@ class ControlPaciente extends ModelPaciente
             return $dsErro = $error[2];
         }
     }
-
 
     public static function listAguardaCadPaciente(){
 
