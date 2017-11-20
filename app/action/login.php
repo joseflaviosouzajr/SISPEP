@@ -41,6 +41,7 @@ switch (gettype($snAcessoValido)){
             $_SESSION['cdUsuario']    = $cdUsuario;
             $_SESSION['nmUsuario']    = $nmUsuario;
             $_SESSION['dsPerfilUser'] = $dsPerfilUser;
+            $_SESSION['cdPerfilUser'] = $cdPerfilUser;
 
             echo '<script>location.href = "' . $url . '"</script>';
         }else{

@@ -6,6 +6,7 @@ try {
     unset($_SESSION['cdUsuario']);
     unset($_SESSION['nmUsuario']);
     unset($_SESSION['dsPerfilUser']);
+    unset($_SESSION['cdPerfilUser']);
 
     //limpa a sessão
     session_unset();
