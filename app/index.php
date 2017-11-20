@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+include_once '../app/action/validaSessao.php';
+
 $cdUsuario      = $_SESSION['cdUsuario'];
 $nmUsuario      = $_SESSION['nmUsuario'];
 $dsPerfilUser   = $_SESSION['dsPerfilUser'];
