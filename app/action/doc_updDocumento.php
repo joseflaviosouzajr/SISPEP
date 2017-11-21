@@ -1,4 +1,8 @@
 <?php
+session_start();
+
+include_once 'validaSessao.php';
+
 include_once '../conf/Conexao.php';
 include_once '../model/ModelPessoa.php';
 include_once '../model/ModelPaciente.php';
@@ -25,7 +29,7 @@ if(empty($cdRegDocumento) || is_null($cdRegDocumento)){
     exit();
 }
 
-//dados da história clinica
+//dados da história clinica, se alguma variavel vier sem dado setado é atribuido nulo a mesma
 $dsHistoriaClinica  = (isset($_POST['dsHistoriaClinica'])) ? $_POST['dsHistoriaClinica'] : null;
 $dsEvolucao         = (isset($_POST['dsEvolucao'])) ? $_POST['dsEvolucao'] : null;
 $dsAlergias         = (isset($_POST['dsAlergias'])) ? $_POST['dsAlergias'] : null;

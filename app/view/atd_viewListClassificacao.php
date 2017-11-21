@@ -39,12 +39,21 @@ include_once '../control/ControlTotem.php';
 <script src="../../lib/plugins/jQuery/jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
 
-    function cancelaClassificacao(s){
+    function cancelaClassificacao(t){
 
         var confirmCancelaSenha = confirm("Tem certeza que deseja cancelar esta senha?");
 
         if(confirmCancelaSenha == true){
-
+            $.ajax({
+                type: 'POST',
+                url: '../action/atd_cancelarSenhaTotem.php',
+                data: {
+                    cdTotem: t
+                },
+                success: function (data) {
+                    $("#result").html(data);
+                }
+            });
         }else{
 
         }

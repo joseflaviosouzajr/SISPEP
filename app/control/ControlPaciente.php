@@ -66,7 +66,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //exibe a lista de pacientes cadastrados sem atendimentos
         $sql = "UPDATE g_atendimento SET sn_alta = 'S', dh_alta = now(), cd_usuario_alta = :cdUsuarioSessao WHERE cd_atendimento = :cdAtendimento";
@@ -113,7 +113,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         $con = Conexao::mysql();
 
         //Seleciona todos os registros da classificação que não foram cadastrados
-        $sql = "SELECT * FROM atd_reg_classificacao WHERE sn_cadastrado = 'N' ORDER BY dh_registro ASC";
+        $sql = "SELECT * FROM atd_reg_classificacao WHERE sn_cadastrado = 'N' AND sn_cadastro_cancelado = 'N' ORDER BY dh_registro ASC";
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
@@ -135,7 +135,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
                             <td align="center">'.date("d/m/Y H:i", strtotime($reg->dh_registro)).'</td>
                             <td align="center">
                                 <a href="../view/atd_viewCadPaciente.php?c='.base64_encode($reg->cd_reg_classificacao).'">Cadastrar</a>
-                                <a href="javascript:void(0)" onclick="cancelaCadastro(\''.$reg->cd_reg_classificacao.'\')">Cancelar</a>
+                                <a href="javascript:void(0)" onclick="cancelaCadastro(\''.base64_encode($reg->cd_reg_classificacao).'\')">Cancelar</a>
                                 </td>
                         </tr>
                     ';
@@ -161,11 +161,8 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         //chama a conexao
         $con = Conexao::mysql();
 
-        //pega usuário logado
-        $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
-
         //exibe a lista de pacientes cadastrados sem atendimentos gerados do dia
-        $sql = "SELECT a.cd_paciente, a.cd_atendimento, p.nm_paciente, a.dh_atendimento FROM g_atendimento a, g_paciente p WHERE a.cd_paciente = p.cd_paciente ";
+        $sql = "SELECT a.cd_paciente, a.cd_atendimento, p.nm_paciente, a.dh_atendimento FROM g_atendimento a, g_paciente p WHERE a.cd_paciente = p.cd_paciente AND a.sn_alta = 'N'";
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
@@ -189,7 +186,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
                 }
             }else{
                 echo '
-                <tr><td colspan="4" align="center">Nenhum paciente encontrado</td></tr>
+                <tr><td colspan="5" align="center">Nenhum paciente encontrado</td></tr>
                 ';
             }
         }
@@ -262,6 +259,29 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
 
                 return 'erro';
             }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+    }
+
+    public function cancelarCadastro($cdRegClassificacao){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
+
+        //atualiza os dados da classificação para realizar o cancelamento do cadastro
+        $sql = "UPDATE atd_reg_classificacao SET sn_cadastro_cancelado = 'S', dh_cancelamento_cadastro = now(), cd_usuario_cancelamento_cadastro = :cdUsuarioSessao WHERE cd_reg_classificacao = :cdRegClassificacao";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdRegClassificacao", $cdRegClassificacao);
+        $stmt->bindParam(":cdUsuarioSessao", $cdUsuarioSessao);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result){
+            return true;
         }
         //se não
         else {

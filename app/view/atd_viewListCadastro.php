@@ -28,6 +28,7 @@ include_once '../control/ControlPaciente.php';
             <th align="center">Senha</th>
             <th align="center">Nome</th>
             <th align="center">Cor</th>
+            <th align="center">Prioridade</th>
             <th align="center">Data/Hora Retirada</th>
             <th align="center">Ação</th>
         </tr>
@@ -43,12 +44,21 @@ include_once '../control/ControlPaciente.php';
 <script src="../../lib/plugins/jQuery/jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
 
-    function cancelaClassificacao(s){
+    function cancelaCadastro(c){
 
-        var confirmCancelaSenha = confirm("Tem certeza que deseja cancelar esta senha?");
+        var confirmCancelaSenha = confirm("Tem certeza que deseja cancelar este cadastro?");
 
         if(confirmCancelaSenha == true){
-
+            $.ajax({
+                type: 'POST',
+                url: '../action/atd_cancelarCadPaciente.php',
+                data: {
+                    cdRegClassificacao: c
+                },
+                success: function (data) {
+                    $("#result").html(data);
+                }
+            });
         }else{
 
         }

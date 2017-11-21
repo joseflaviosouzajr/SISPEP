@@ -18,7 +18,7 @@ class ControlPrescricao extends ModelPrescricao implements interfControlPrescric
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //retorna se a prescrição esta aberta
         $snPrescricaoAberta = self::snPrescricaoAberta($cdAtendimento);

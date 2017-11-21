@@ -17,7 +17,7 @@ include_once '../control/ControlPaciente.php';
 <?php include_once 'navbar.php';?>
 <section>
     <div>
-        <h1 align="center">Lista para inicar atendimento</h1>
+        <h1 align="center">Lista para iniciar atendimento</h1>
     </div>
     <hr>
     <table border="1" width="100%">

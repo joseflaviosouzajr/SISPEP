@@ -120,7 +120,7 @@ class ControlDocumento extends ModelDocumento implements interfControlDoc
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         $snDocumentoFechado = self::snDocumentoFechado($documento, $cdAtendimento=null, $cdRegDocumento);
 

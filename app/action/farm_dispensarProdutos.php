@@ -44,15 +44,10 @@ if(gettype($snSolAtend) == 'boolean'){
                     $prod->setCdProduto($reg->cd_produto);
                     $prod->setSaldo($reg->qtd);
 
-                    echo $prod->getCdProduto();
-                    echo '<br>';
-
                     $snSaldoAlterado = $prod->AlterarSaldo("-");
-
-                    var_dump($snSaldoAlterado);
                 }
             }else{
-                echo $num;
+                //echo $num;
             }
         }else{
             var_dump($stmt->errorInfo());
@@ -75,4 +70,4 @@ if(gettype($snSolAtend) == 'boolean'){
 
 }
 
-//echo '<script>location.href = "' . $url . '"</script>';
+echo '<script>location.href = "' . $url . '"</script>';

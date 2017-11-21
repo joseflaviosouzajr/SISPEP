@@ -4,6 +4,7 @@ interface interfControlTotem
 {
     public function retirarSenha();
     public function getDadosTotem($cdTotem);
+    public function cancelarSenha();
 }
 class ControlTotem extends ModelTotem implements interfControlTotem
 {
@@ -34,6 +35,30 @@ class ControlTotem extends ModelTotem implements interfControlTotem
             return $dsErro = $error[2];
         }
 
+    }
+
+    public function cancelarSenha(){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //usuario logado
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
+
+        //cancela o totem
+        $sql = "UPDATE `atd_totem` SET sn_cancelado = 'S', dh_cancelamento = now(), cd_usuario_cancelamento = :cdUsuarioSessao WHERE cd_totem = :cdTotem";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdTotem", $this->cdTotem);
+        $stmt->bindParam(":cdUsuarioSessao", $cdUsuarioSessao);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            return true;
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
     }
 
     public static function getUltimoTotem()
@@ -149,27 +174,31 @@ class ControlTotem extends ModelTotem implements interfControlTotem
         $con = Conexao::mysql();
 
         //pega os dados do totem
-        $sql  = "SELECT t.cd_totem, t.nr_totem, t.dh_registro, ds_prioridade_totem FROM atd_totem t, atd_prioridade_totem pt 
-        WHERE t.cd_prioridade_totem = pt.cd_prioridade_totem AND t.sn_atendido = 'N' ORDER BY pt.nr_ordem, t.dh_registro ASC";
+        $sql  = "SELECT t.cd_totem, t.nr_totem, t.dh_registro, ds_prioridade_totem FROM atd_totem t, atd_prioridade_totem pt WHERE t.cd_prioridade_totem = pt.cd_prioridade_totem AND t.sn_atendido = 'N' AND t.sn_cancelado = 'N' ORDER BY pt.nr_ordem, t.dh_registro ASC";
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
         if ($result) {
-            while($reg = $stmt->fetch(PDO::FETCH_OBJ)){
+            $num = $stmt->rowCount();
+            if($num > 0){
+                while($reg = $stmt->fetch(PDO::FETCH_OBJ)){
 
-                //exibe a lista da classificação
-                echo '
+                    //exibe a lista da classificação
+                    echo '
                     <tr>
                         <td align="center">'.$reg->nr_totem.'</td>
                         <td align="center">'.date("d/m/Y H:i", strtotime($reg->dh_registro)).'</td>
                         <td align="center">'.$reg->ds_prioridade_totem.'</td>
                         <td align="center">
                             <a href="../view/atd_viewAtdClassificacao.php?s='.base64_encode($reg->cd_totem).'">Atender</a>
-                            <a href="javascript:void(0)" onclick="cancelaClassificacao(\''.$reg->cd_totem.'\')">Cancelar</a>
+                            <a href="javascript:void(0)" onclick="cancelaClassificacao(\''.base64_encode($reg->cd_totem).'\')">Cancelar</a>
                             </td>
                     </tr>
                 ';
 
+                }
+            }else{
+                echo '<tr><td colspan="4" align="center">Nenhum paciente para classificar</td></tr>';
             }
 
         }
@@ -197,11 +226,11 @@ class ControlTotem extends ModelTotem implements interfControlTotem
         $result = $stmt->execute();
         //se conseguir executar a a consulta
         if ($result) {
-           return true;
+            return true;
         }
         //se não
         else {
-           return false;
+            return false;
         }
 
     }
