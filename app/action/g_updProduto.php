@@ -16,4 +16,20 @@ $prod->setCdProduto($cdProduto);
 
 $snAltera = $prod->Alterar();
 
-var_dump($snAltera);
+$url = "http://" . $_SERVER['HTTP_HOST'] . "/sispep/app/view/g_viewCadProduto.php";
+
+switch (gettype($snAltera)){
+    case 'string':
+        echo $snAltera;
+        break;
+
+    case 'boolean':
+
+        if($snAltera){
+            echo '<script>alert("cadastro do produto atualizado!");</script>';
+            echo '<script>location.href = "' . $url . '"</script>';
+        }else{
+            echo '<script>alert("problema ao atualizar o cadastro do produto!");</script>';
+        }
+        break;
+}

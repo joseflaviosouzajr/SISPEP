@@ -17,8 +17,6 @@ $pct = new ControlPaciente();
 //metodo para cancelar a senha do totem
 $snCancelaCad = $pct->cancelarCadastro($cdRegClassificacao);
 
-$url = "http://" . $_SERVER['HTTP_HOST'] . "/sispep/app/view/atd_viewListCadastro.php";
-
 switch (gettype($snCancelaCad)){
     case 'string':
         echo $snCancelaCad;
@@ -26,6 +24,5 @@ switch (gettype($snCancelaCad)){
 
     case 'boolean':
         echo 'cadastro do paciente cancelado';
-        echo '<script>location.href = "' . $url . '"</script>';
         break;
 }
