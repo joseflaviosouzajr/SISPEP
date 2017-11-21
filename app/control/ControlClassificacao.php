@@ -69,7 +69,7 @@ class ControlClassificacao extends ModelClassificacao implements interfControlCl
         $con = Conexao::mysql();
 
         //pega usuário logado
-        $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //Busca o nome do paciente digitado na classificação
         $sql = "UPDATE `atd_reg_classificacao` SET sn_cadastrado = 'S', dh_cadastro = now(), cd_usuario_cadastro = :cdUsuarioSessao WHERE cd_reg_classificacao = :cdRegClassificacao";

@@ -1,6 +1,6 @@
 <?php
 interface interfControlPaciente{
-    public function Cadatrar();
+    public function Cadastrar();
     public function Atualizar();
     public function Excluir();
 }
@@ -13,7 +13,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         parent::__construct($nmPaciente, $dtNascimento, $tpSexo, $dsEstadoCivil, $dsProfissao, $dsEndereco, $nrEndereco, $dsComplemento, $cdCep, $cdUf, $cdCpf, $cdRg, $nrCelular, $nrTelefone, $dsEmail, $dsObservacao);
     }
 
-    public function Cadatrar(){
+    public function Cadastrar(){
 
         //chama a conexao
         $con = Conexao::mysql();

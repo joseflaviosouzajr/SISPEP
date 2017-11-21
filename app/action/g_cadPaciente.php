@@ -31,7 +31,7 @@ $dsObservacao   = isset($_POST['dsObservacao']) ? $_POST['dsObservacao'] : null;
 
 $pct = new ControlPaciente($nmPaciente,$dtNascimento,$tpSexo,$dsEstadoCivil,$dsProfissao,$dsEndereco,$nrEndereco,$dsComplemento,$cdCep,$cdUf,$cdCpf,$cdRg,$nrCelular,$nrTelefone,$dsEmail,$dsObservacao);
 
-$snCadastroPaciente = $pct->Cadatrar();
+$snCadastroPaciente = $pct->Cadastrar();
 
 if($snCadastroPaciente === true){
     $snRetiraListaCadastro = ControlClassificacao::cadastroRealizado($cdRegClassificacao);
