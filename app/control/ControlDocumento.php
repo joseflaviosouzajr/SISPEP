@@ -19,7 +19,7 @@ class ControlDocumento extends ModelDocumento implements interfControlDoc
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         $snDocumentoFechado = self::snDocumentoFechado($documento, $cdAtendimento);
 
@@ -55,7 +55,7 @@ class ControlDocumento extends ModelDocumento implements interfControlDoc
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         $snDocumentoFechado = self::snDocumentoFechado($documento, null, $cdRegDocumento);
 
@@ -85,8 +85,6 @@ class ControlDocumento extends ModelDocumento implements interfControlDoc
     public function Excluir($documento, $cdRegDocumento){
         //chama a conexao
         $con = Conexao::mysql();
-
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
         $snDocumentoFechado = self::snDocumentoFechado($documento, null, $cdRegDocumento);
 
@@ -119,8 +117,6 @@ class ControlDocumento extends ModelDocumento implements interfControlDoc
     public function Fechar($documento, $cdRegDocumento){
         //chama a conexao
         $con = Conexao::mysql();
-
-        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         $snDocumentoFechado = self::snDocumentoFechado($documento, $cdAtendimento=null, $cdRegDocumento);
 

@@ -22,7 +22,7 @@ class ControlUsuario extends ModelUsuario implements interControlUsuario
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         $cdUsuario = self::returnCdUsuario();
 

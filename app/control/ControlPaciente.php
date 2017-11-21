@@ -19,7 +19,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         $con = Conexao::mysql();
 
         //pega usuário logado
-        $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //sql para inserir o paciente
         $sql = "INSERT INTO `g_paciente`(`nm_paciente`, `dt_nascimento`, `tp_sexo`, `ds_estado_civil`, `ds_profissao`, `ds_endereco`, `nr_endereco`, `ds_complemento`, `cd_cep`, `cd_uf`, `cd_cpf`, `cd_rg`, `nr_celular`, `nr_telefone`, `ds_email`, `ds_observacao`, `cd_usuario_cadastro`) VALUES (:nmPaciente, :dtNascimento, :tpSexo, :dsEstadoCivil, :dsProfissao, :dsEndereco, :nrEndereco, :dsComplemento, :cdCep, :cdUf, :cdCpf, :cdRg, :nrCelular, :nrTelefone, :dsEmail, :dsObservacao, :cdUsuarioSessao)";
@@ -330,7 +330,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         $con = Conexao::mysql();
 
         //pega usuário logado
-        $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //insere um novo atendimento para o paciente
         $sql = "INSERT INTO g_atendimento (cd_paciente, cd_usuario_registro) VALUES (:cdPaciente, :cdUsuario)";

@@ -26,7 +26,7 @@ class ControlClassificacao extends ModelClassificacao implements interfControlCl
         $con = Conexao::mysql();
 
         //pega usuário logado
-        $cdUsuarioSessao = 1;//$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //insere o totem na tabela de totem
         $sql = "INSERT INTO `atd_reg_classificacao`(`cd_totem`, `nm_paciente`, `idade`, `peso`, `ds_diagnostico`, `cor`, `nivel_dor`, `pa`, `ps`, `temperatura`, `fc`, `fr`, `cd_usuario_registro`) VALUES (:cdTotem, :nmPaciente, :idade, :peso, :dsDiagnostico, :cor, :nivelDor, :pa, :ps, :temperatura, :fc, :fr, :cdUsuarioSessao)";

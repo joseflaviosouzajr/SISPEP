@@ -57,7 +57,7 @@ class ControlPrescricao extends ModelPrescricao implements interfControlPrescric
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //retorna se a prescrição esta aberta
         $snPrescricaoAberta = self::snPrescricaoAberta(null, $this->cdPrescricao);
@@ -91,8 +91,6 @@ class ControlPrescricao extends ModelPrescricao implements interfControlPrescric
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
-
         //retorna se a prescrição esta aberta
         $snPrescricaoAberta = self::snPrescricaoAberta(null, $this->cdPrescricao);
 
@@ -125,7 +123,7 @@ class ControlPrescricao extends ModelPrescricao implements interfControlPrescric
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //retorna se a prescrição esta aberta
         $snPrescricaoAberta = self::snPrescricaoAberta(null, $this->cdPrescricao);
@@ -241,7 +239,7 @@ class ControlPrescricao extends ModelPrescricao implements interfControlPrescric
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //retorna se a prescrição esta aberta
         $snPrescricaoAberta = self::snPrescricaoAberta(null, $this->cdPrescricao);
@@ -332,8 +330,6 @@ class ControlPrescricao extends ModelPrescricao implements interfControlPrescric
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
-
         //retorna o numero da prescricao do item
         $cdPrescricao = ControlPrescricao::returnCdPresc($this->cdItPrescricao);
 
@@ -369,8 +365,6 @@ class ControlPrescricao extends ModelPrescricao implements interfControlPrescric
 
         //chama a conexao
         $con = Conexao::mysql();
-
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
         //retorna se a prescrição esta aberta
         $snPrescricaoAberta = self::snPrescricaoAberta(null, $this->cdPrescricao);
@@ -477,7 +471,7 @@ class ControlPrescricao extends ModelPrescricao implements interfControlPrescric
         //chama a conexao
         $con = Conexao::mysql();
 
-        $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
+        $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //retorna se o item está checado
         $snChecado = ControlPrescricao::snItemChecado($this->cdItPrescricao);

@@ -1,4 +1,8 @@
 <?php
+session_start();
+
+include_once 'validaSessao.php';
+
 include_once '../conf/Conexao.php';
 include_once '../model/ModelDocumento.php';
 include_once '../model/ModelPessoa.php';

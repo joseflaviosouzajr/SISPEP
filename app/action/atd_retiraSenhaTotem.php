@@ -1,4 +1,7 @@
 <?php
+session_start();
+
+include_once 'validaSessao.php';
 
 include_once '../conf/Conexao.php';
 include_once '../model/ModelTotem.php';
