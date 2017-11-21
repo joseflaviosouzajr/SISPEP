@@ -124,6 +124,11 @@ class PerfilUser extends MenuUsuario {
                 <h2><a href="view/g_viewListProduto.php">PRODUTOS</a></h2>
             </td>
         </tr>
+        <tr>
+            <td align="center" valign="middle">
+                <h2><a href="view/g_viewFormRelAtendimentos.php">RELATÓRIO<br>ATENDIMENTOS</a></h2>
+            </td>
+        </tr>
         <?php
     }else{
         $perfil = new PerfilUser();
