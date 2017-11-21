@@ -24,6 +24,7 @@ include_once '../control/ControlPaciente.php';
         <thead>
         <tr>
             <th align="center">Atendimento</th>
+            <th align="center">Classificação</th>
             <th align="center">Prontuário</th>
             <th align="center">Nome</th>
             <th align="center">Data/Hora Atendimento</th>

@@ -31,12 +31,27 @@ $dsObservacao   = isset($_POST['dsObservacao']) ? $_POST['dsObservacao'] : null;
 
 $pct = new ControlPaciente($nmPaciente,$dtNascimento,$tpSexo,$dsEstadoCivil,$dsProfissao,$dsEndereco,$nrEndereco,$dsComplemento,$cdCep,$cdUf,$cdCpf,$cdRg,$nrCelular,$nrTelefone,$dsEmail,$dsObservacao);
 
-$snCadastroPaciente = $pct->Cadastrar();
+$snCadastroPaciente = $pct->Cadastrar($cdRegClassificacao);
 
-if($snCadastroPaciente === true){
+if($snCadastroPaciente){
     $snRetiraListaCadastro = ControlClassificacao::cadastroRealizado($cdRegClassificacao);
 
-    if ($snRetiraListaCadastro === true){
-        echo 'cadastrado e retirado da lista';
+    $url = "http://" . $_SERVER['HTTP_HOST'] . "/sispep/app/view/atd_viewListCadastro.php";
+
+    switch (gettype($snRetiraListaCadastro)){
+        case 'string':
+            echo $snRetiraListaCadastro;
+            break;
+
+        case 'boolean':
+
+            if($snRetiraListaCadastro){
+                echo '<script>alert("Paciente Cadastrado!");</script>';
+                echo '<script>location.href = "' . $url . '"</script>';
+            }else{
+                echo '<script>alert("problema ao cadastrar paciente!");</script>';
+                echo '<script>history.go(-1);</script>';
+            }
+            break;
     }
 }

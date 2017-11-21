@@ -1,6 +1,6 @@
 <?php
 interface interfControlPaciente{
-    public function Cadastrar();
+    public function Cadastrar($cdRegClassificacao);
     public function Atualizar();
     public function Excluir();
 }
@@ -13,7 +13,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         parent::__construct($nmPaciente, $dtNascimento, $tpSexo, $dsEstadoCivil, $dsProfissao, $dsEndereco, $nrEndereco, $dsComplemento, $cdCep, $cdUf, $cdCpf, $cdRg, $nrCelular, $nrTelefone, $dsEmail, $dsObservacao);
     }
 
-    public function Cadastrar(){
+    public function Cadastrar($cdRegClassificacao){
 
         //chama a conexao
         $con = Conexao::mysql();
@@ -22,7 +22,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         $cdUsuarioSessao = $_SESSION['cdUsuario'];
 
         //sql para inserir o paciente
-        $sql = "INSERT INTO `g_paciente`(`nm_paciente`, `dt_nascimento`, `tp_sexo`, `ds_estado_civil`, `ds_profissao`, `ds_endereco`, `nr_endereco`, `ds_complemento`, `cd_cep`, `cd_uf`, `cd_cpf`, `cd_rg`, `nr_celular`, `nr_telefone`, `ds_email`, `ds_observacao`, `cd_usuario_cadastro`) VALUES (:nmPaciente, :dtNascimento, :tpSexo, :dsEstadoCivil, :dsProfissao, :dsEndereco, :nrEndereco, :dsComplemento, :cdCep, :cdUf, :cdCpf, :cdRg, :nrCelular, :nrTelefone, :dsEmail, :dsObservacao, :cdUsuarioSessao)";
+        $sql = "INSERT INTO `g_paciente`(`nm_paciente`, `dt_nascimento`, `tp_sexo`, `ds_estado_civil`, `ds_profissao`, `ds_endereco`, `nr_endereco`, `ds_complemento`, `cd_cep`, `cd_uf`, `cd_cpf`, `cd_rg`, `nr_celular`, `nr_telefone`, `ds_email`, `ds_observacao`, `cd_usuario_cadastro`, `cd_reg_classificacao`) VALUES (:nmPaciente, :dtNascimento, :tpSexo, :dsEstadoCivil, :dsProfissao, :dsEndereco, :nrEndereco, :dsComplemento, :cdCep, :cdUf, :cdCpf, :cdRg, :nrCelular, :nrTelefone, :dsEmail, :dsObservacao, :cdUsuarioSessao, :cdRegClassificacao)";
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":nmPaciente", $this->nmPessoa);
         $stmt->bindParam(":dtNascimento", $this->dtNascimento);
@@ -41,6 +41,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         $stmt->bindParam(":dsEmail", $this->dsEmail);
         $stmt->bindParam(":dsObservacao", $this->dsObservacao);
         $stmt->bindParam(":cdUsuarioSessao", $cdUsuarioSessao);
+        $stmt->bindParam(":cdRegClassificacao", $cdRegClassificacao);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
         if ($result) {
@@ -162,7 +163,24 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         $con = Conexao::mysql();
 
         //exibe a lista de pacientes cadastrados sem atendimentos gerados do dia
-        $sql = "SELECT a.cd_paciente, a.cd_atendimento, p.nm_paciente, a.dh_atendimento FROM g_atendimento a, g_paciente p WHERE a.cd_paciente = p.cd_paciente AND a.sn_alta = 'N'";
+        $sql = "SELECT a.cd_paciente,
+       a.cd_atendimento,
+       p.nm_paciente,
+       a.dh_atendimento,
+       c.cor,
+       CASE c.cor
+       WHEN 'VERMELHO' THEN 1
+       WHEN 'AMARELO' THEN 2
+       WHEN 'VERDE' THEN 3
+       ELSE 0 END AS ordem,
+       pri.nr_ordem
+FROM g_atendimento a, g_paciente p, atd_reg_classificacao c, atd_totem t, atd_prioridade_totem pri
+WHERE a.cd_paciente               = p.cd_paciente
+      AND p.cd_reg_classificacao  = c.cd_reg_classificacao
+      AND t.cd_totem              = c.cd_totem
+      AND pri.cd_prioridade_totem = t.cd_prioridade_totem
+      AND a.sn_alta               = 'N'
+ORDER BY nr_ordem DESC, ordem, a.cd_atendimento ASC";
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
@@ -171,10 +189,29 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
             if($num > 0){
                 while($reg = $stmt->fetch(PDO::FETCH_OBJ)){
 
+                    switch ($reg->cor){
+                        case 'VERMELHO':
+                            $style = 'style="color: red;"';
+                            break;
+
+                        case 'VERDE':
+                            $style = 'style="color: green;"';
+                            break;
+
+                        case 'AMARELO':
+                            $style = 'style="color: yellow;"';
+                            break;
+
+                        default:
+                            $style = '';
+                            break;
+                    }
+
                     //exibe a lista da classificação
                     echo '
                         <tr>
                             <td align="center">'.$reg->cd_atendimento.'</td>
+                            <td align="center" '.$style.'>'.$reg->cor.'</td>
                             <td align="center">'.$reg->cd_paciente.'</td>
                             <td align="center">'.$reg->nm_paciente.'</td>
                             <td align="center">'.date("d/m/Y H:i", strtotime($reg->dh_atendimento)).'</td>
@@ -321,7 +358,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
             $error = $stmt->errorInfo();
             return $dsErro = $error[2];
         }
-}
+    }
 
 
     public function iniciaAtendimentoPaciente(){
@@ -350,4 +387,4 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
 
     }
 
-    }
+}

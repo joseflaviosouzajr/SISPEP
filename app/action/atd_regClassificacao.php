@@ -25,6 +25,7 @@ $fr             = $_POST['fr'];
 $cor            = isset($_POST['cor']) ? $_POST['cor'] : null;
 $dor            = isset($_POST['dor']) ? $_POST['dor'] : null;
 
+$url = "http://" . $_SERVER['HTTP_HOST'] . "/sispep/app/view/atd_viewListClassificacao.php";
 
 $clasf = new ControlClassificacao($dsDiagnostico,$peso,$pa,$ps,$temp,$fc,$fr,$cor,$dor);
 $clasf->setNmPessoa($nmPaciente);
@@ -33,4 +34,19 @@ $clasf->setIdade($idade);
 
 $snCadClass = $clasf->Cadastrar($cdTotem);
 
-var_dump($snCadClass);
+switch (gettype($snCadClass)){
+    case 'string':
+        echo $snCadClass;
+        break;
+
+    case 'boolean':
+
+        if($snCadClass){
+            echo '<script>alert("Paciente Classificado!");</script>';
+            echo '<script>location.href = "' . $url . '"</script>';
+        }else{
+            echo '<script>alert("Problema ao classificar paciente!");</script>';
+            echo '<script>history.go(-1);</script>';
+        }
+        break;
+}

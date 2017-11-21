@@ -52,7 +52,7 @@ class ControlClassificacao extends ModelClassificacao implements interfControlCl
                 ControlTotem::concluirClassif($cdTotem);
                 return true;
             }catch (Exception $e){
-                echo $e->getMessage();
+                return $e->getMessage();
             }
         }
         //se não
