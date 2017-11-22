@@ -14,12 +14,22 @@ include_once '../control/ControlPaciente.php';
     <title>SISPEP | Lista de Atendimento Médico</title>
 </head>
 <body>
-<?php include_once 'navbar.php';?>
+<?php
+include_once 'navbar.php';
+$dsBusca = isset($_GET['dsBusca']) ? $_GET['dsBusca'] : null;
+?>
 <section>
     <div>
         <h1 align="center">Lista de Atendimento Médico</h1>
     </div>
     <hr>
+
+    <form method="get" action="med_viewListAtendimento.php">
+        <label>Digite para buscar: </label>
+        <input type="text" name="dsBusca" placeholder="Digite o nome do paciente..." style="width:400px;" />
+        <button type="submit">Buscar</button>
+    </form>
+    <br/>
     <table border="1" width="100%">
         <thead>
         <tr>
@@ -32,7 +42,7 @@ include_once '../control/ControlPaciente.php';
         </tr>
         </thead>
         <tbody>
-        <?php ControlPaciente::listAtendimentoPaciente();  ?>
+        <?php ControlPaciente::listAtendimentoPaciente($dsBusca);  ?>
         </tbody>
     </table>
 </section>

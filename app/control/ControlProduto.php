@@ -134,6 +134,34 @@ class ControlProduto extends ModelProduto implements interfProduto
         }
     }
 
+    public function DevolverProdutos($cdSolProd){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //atualiza o saldo do produto. A variável $operacao receberá o valor - ou +, na qual será utilizada na variável da consulta abaixo para debitar ou creditar o saldo do produto
+        $sql = "SELECT cd_produto, qtd FROM farm_sol_prod s, g_it_prescricao it WHERE s.cd_prescricao = it.cd_prescricao AND cd_sol_prod = :cdSolProd";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdSolProd", $cdSolProd);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+
+            while($reg = $stmt->fetch(PDO::FETCH_OBJ)){
+
+                self::setSaldo($reg->qtd);
+                self::setCdProduto($reg->cd_produto);
+                self::AlterarSaldo("+");
+
+            }
+
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+    }
+
     public function Excluir(){
 
     }

@@ -149,7 +149,7 @@ class ControlDocumento extends ModelDocumento implements interfControlDoc
         $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
         //exibe a lista de pacientes cadastrados sem atendimentos
-        $sql = "SELECT cd_reg_doc, dh_registro, CASE WHEN sn_fechado = 'S' AND sn_cancelado = 'N' THEN 'FECHADO' WHEN sn_fechado = 'N' AND sn_cancelado = 'N' THEN 'EM ABERTO' WHEN sn_cancelado = 'S' THEN 'CANCELADO' ELSE '' END dsStatus, cd_atendimento FROM $documento WHERE cd_atendimento IN (SELECT cd_atendimento FROM g_atendimento WHERE cd_paciente = :cdPaciente) ORDER BY cd_reg_doc DESC";
+        $sql = "SELECT cd_reg_doc, d.dh_registro, CASE WHEN sn_fechado = 'S' AND sn_cancelado = 'N' THEN 'FECHADO' WHEN sn_fechado = 'N' AND sn_cancelado = 'N' THEN 'EM ABERTO' WHEN sn_cancelado = 'S' THEN 'CANCELADO' ELSE '' END dsStatus, cd_atendimento, u.nm_usuario FROM $documento d, g_usuario u WHERE u.cd_usuario = d.cd_usuario_registro AND d.cd_atendimento IN (SELECT cd_atendimento FROM g_atendimento WHERE cd_paciente = :cdPaciente) ORDER BY cd_reg_doc ASC";
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":cdPaciente", $cdPaciente);
         $result = $stmt->execute();
@@ -166,9 +166,10 @@ class ControlDocumento extends ModelDocumento implements interfControlDoc
 
                     echo '
                         <tr>
-                            <td>
+                            <td style="border: 1px solid #fff; padding: 3px; background:#e0e0e0;">
                                 <a class="'.$textClass.'" href="'.$url.'">
-                                NOME DO USUARIO
+                                
+                                '.$reg->nm_usuario.'
                                 <br> 
                                 '.$reg->dsStatus.'
                                 <br> 

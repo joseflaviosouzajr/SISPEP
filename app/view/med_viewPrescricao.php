@@ -13,7 +13,7 @@ $cpresc->setCdPrescricao($cdPrescricao);
 
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
     <tr>
-        <td width="70%" valign="top">
+        <td width="70%" height="50px" valign="top"  bgcolor="#e3e3e3">
             <form id="formAddItemPrescricao" method="post" style="padding: 1em;">
                 <input type="hidden" name="cdAtendimento" value="<?php echo $cdAtendimento;?>"/>
                 <input type="hidden" name="cdPrescricao" value="<?php echo $cdRegDocumento;?>"/>
@@ -25,24 +25,27 @@ $cpresc->setCdPrescricao($cdPrescricao);
                 <button type="submit">Adicionar</button>
             </form>
         </td>
-        <td width="30%" valign="top" rowspan="2">
+        <td width="30%" valign="top" rowspan="3">
+            <h3 align="center">Histórico</h3>
+            <div style="position: relative; height: 500px; overflow-x: hidden;">
             <table width="100%">
                 <?php
                 //inclui a lista de historico deste documento para o usuário do prontuário acessado
                 ControlPrescricao::listHistDoc($cdPaciente);
                 ?>
             </table>
+            </div>
         </td>
     </tr>
     <tr>
-        <td width="70%" valign="top" bgcolor="#f8f8ff" id="viewListItemPrescricao">
+        <td width="70%" valign="top" id="viewListItemPrescricao" height="80%">
             <?php
             $cpresc->viewItemsPrescricao();
             ?>
         </td>
     </tr>
     <tr>
-        <td bgcolor="#f8f8ff">
+        <td bgcolor="#e3e3e3" style="padding: 10px">
             <ul class="buttons-doc">
                 <li>
                     <button type="button" name="nvDoc" onclick="novaPrescricao('<?php echo $cdAtendimento;?>')">Novo</button>

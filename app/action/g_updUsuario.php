@@ -15,7 +15,7 @@ $senha      = $_POST['senha'];
 $csenha     = $_POST['csenha'];
 $cdTpPerfil = $_POST['cdTpPerfil'];
 
-$senhaValida = ControlUsuario::validaSenha($senha, $csenha);
+$senhaValida = ControlUsuario::validaConfirmacaoSenha($senha, $csenha);
 
 //verifica se a senha foi digitada
 if(empty($senha)){
@@ -53,7 +53,20 @@ if($cdUsuarioExist > 0){
 }
 
 //chama o método para alterar os dados do usuário
-$cadUser    = $cUser->Atualizar();
+$updUser    = $cUser->Atualizar();
 
-var_dump($cadUser);
+switch (gettype($updUser)){
+    case 'string':
+        echo $updUser;
+        break;
+
+    case 'boolean':
+
+        if($updUser){
+            echo '<script>alert("Cadastro Alterado!");</script>';
+        }else{
+            echo '<script>alert("problema ao alterar cadastro!");</script>';
+        }
+        break;
+}
 

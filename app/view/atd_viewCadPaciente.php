@@ -169,7 +169,7 @@ $nmPaciente = ControlClassificacao::returnNmPaciente($cdRegClassificacao);
             <tfooter>
                 <tr>
                     <td align="right" colspan="2">
-                        <button type="submit">Classificar</button>
+                        <button type="submit">Cadastrar</button>
                     </td>
                 </tr>
             </tfooter>

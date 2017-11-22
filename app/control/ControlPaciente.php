@@ -114,7 +114,12 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
         $con = Conexao::mysql();
 
         //Seleciona todos os registros da classificação que não foram cadastrados
-        $sql = "SELECT * FROM atd_reg_classificacao WHERE sn_cadastrado = 'N' AND sn_cadastro_cancelado = 'N' ORDER BY dh_registro ASC";
+        $sql = "SELECT *,
+       CASE cor
+       WHEN 'VERMELHO' THEN 1
+       WHEN 'AMARELO' THEN 2
+       WHEN 'VERDE' THEN 3
+       ELSE 0 END AS ordem FROM atd_reg_classificacao WHERE sn_cadastrado = 'N' AND sn_cadastro_cancelado = 'N' ORDER BY ordem, dh_registro ASC";
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();
         //se conseguir executar a a consulta
@@ -126,12 +131,30 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
                     $nrTotem      = ControlTotem::returnNrTotem($reg->cd_totem);
                     $dsPrioridade = ControlTotem::returnDsPrioridade($reg->cd_totem);
 
+                    switch ($reg->cor){
+                        case 'VERMELHO':
+                            $style = 'style="color: red;"';
+                            break;
+
+                        case 'VERDE':
+                            $style = 'style="color: green;"';
+                            break;
+
+                        case 'AMARELO':
+                            $style = 'style="color: yellow;"';
+                            break;
+
+                        default:
+                            $style = '';
+                            break;
+                    }
+
                     //exibe a lista da classificação
                     echo '
                         <tr>
                             <td align="center">'.$nrTotem.'</td>
                             <td align="center">'.$reg->nm_paciente.'</td>
-                            <td align="center">'.$reg->cor.'</td>
+                            <td align="center" '.$style.'>'.$reg->cor.'</td>
                             <td align="center">'.$dsPrioridade.'</td>
                             <td align="center">'.date("d/m/Y H:i", strtotime($reg->dh_registro)).'</td>
                             <td align="center">
@@ -158,7 +181,7 @@ class ControlPaciente extends ModelPaciente implements interfControlPaciente
 
     }
 
-    public static function listAtendimentoPaciente(){
+    public static function listAtendimentoPaciente($dsBusca=null){
         //chama a conexao
         $con = Conexao::mysql();
 
@@ -179,7 +202,9 @@ WHERE a.cd_paciente               = p.cd_paciente
       AND p.cd_reg_classificacao  = c.cd_reg_classificacao
       AND t.cd_totem              = c.cd_totem
       AND pri.cd_prioridade_totem = t.cd_prioridade_totem
-      AND a.sn_alta               = 'N'
+      AND a.sn_alta               = 'N'";
+        $sql .= (!is_null($dsBusca)) ? " AND p.nm_paciente LIKE '%".$dsBusca."%'" : "";
+        $sql .= "
 ORDER BY nr_ordem DESC, ordem, a.cd_atendimento ASC";
         $stmt = $con->prepare($sql);
         $result = $stmt->execute();

@@ -220,7 +220,7 @@ class ControlUsuario extends ModelUsuario implements interControlUsuario
 
     }
 
-    public static function validaSenha($senha, $csenha){
+    public static function validaConfirmacaoSenha($senha, $csenha){
 
         if($senha != $csenha){
             return false;
@@ -228,6 +228,33 @@ class ControlUsuario extends ModelUsuario implements interControlUsuario
             return true;
         }
 
+    }
+
+    public function AlterarSenha(){
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //atualiza a senha do usuário pelo codigo
+        $sql = "UPDATE g_usuario SET ds_senha = :dsSenha WHERE cd_usuario = :cdUsuario";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":dsSenha", $this->dsSenha);
+        $stmt->bindParam(":cdUsuario", $this->cdUsuario);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+            if($num > 0){
+                return true;
+            }else{
+                return false;
+            }
+
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
     }
 
     public function validaLogin(){

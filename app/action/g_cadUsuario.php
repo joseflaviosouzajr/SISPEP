@@ -14,7 +14,7 @@ $senha      = $_POST['senha'];
 $csenha     = $_POST['csenha'];
 $cdTpPerfil = $_POST['cdTpPerfil'];
 
-$senhaValida = ControlUsuario::validaSenha($senha, $csenha);
+$senhaValida = ControlUsuario::validaConfirmacaoSenha($senha, $csenha);
 
 //verifica se a senha foi digitada
 if(empty($senha)){

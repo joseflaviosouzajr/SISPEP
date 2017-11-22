@@ -100,4 +100,35 @@ class ControlFarmacia extends ModelFarmacia implements interfControlFarmacia
 
     }
 
+    public static function returnCdSolProd($cdPrescricao){
+
+        //chama a conexao
+        $con = Conexao::mysql();
+
+        //busca os dados do documento passado no parametro
+        $sql = "SELECT cd_sol_prod FROM farm_sol_prod WHERE cd_prescricao = :cdPrescricao";
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(":cdPrescricao", $cdPrescricao);
+        $result = $stmt->execute();
+        //se conseguir executar a a consulta
+        if ($result) {
+            $num = $stmt->rowCount();
+            if($num > 0){
+                $reg = $stmt->fetch(PDO::FETCH_OBJ);
+
+                return $reg->cd_sol_prod;
+
+            }else{
+                return false;
+            }
+        }
+        //se não
+        else {
+            $error = $stmt->errorInfo();
+            return $dsErro = $error[2];
+        }
+
+
+    }
+
 }

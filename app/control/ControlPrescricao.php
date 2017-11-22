@@ -188,7 +188,7 @@ class ControlPrescricao extends ModelPrescricao implements interfControlPrescric
         $cdUsuarioSessao = 1; //$_SESSION['cdUsuario'];
 
         //exibe a lista de pacientes cadastrados sem atendimentos
-        $sql = "SELECT cd_prescricao, dh_registro, CASE WHEN sn_fechado = 'S' AND sn_cancelado = 'N' THEN 'FECHADO' WHEN sn_fechado = 'N' AND sn_cancelado = 'N' THEN 'EM ABERTO' WHEN sn_cancelado = 'S' THEN 'CANCELADO' ELSE '' END dsStatus, cd_atendimento FROM g_prescricao WHERE cd_paciente = :cdPaciente";
+        $sql = "SELECT cd_prescricao, p.dh_registro, CASE WHEN sn_fechado = 'S' AND sn_cancelado = 'N' THEN 'FECHADO' WHEN sn_fechado = 'N' AND sn_cancelado = 'N' THEN 'EM ABERTO' WHEN sn_cancelado = 'S' THEN 'CANCELADO' ELSE '' END dsStatus, cd_atendimento, u.nm_usuario FROM g_prescricao p, g_usuario u WHERE p.cd_usuario_registro = u.cd_usuario AND p.cd_paciente = :cdPaciente ORDER BY p.cd_prescricao DESC";
         $stmt = $con->prepare($sql);
         $stmt->bindParam(":cdPaciente", $cdPaciente);
         $result = $stmt->execute();
@@ -205,9 +205,9 @@ class ControlPrescricao extends ModelPrescricao implements interfControlPrescric
 
                     echo '
                         <tr>
-                            <td>
+                            <td style="border: 1px solid #fff; padding: 3px; background:#e0e0e0;">
                                 <a class="'.$textClass.'" href="'.$url.'">
-                                NOME DO USUARIO
+                                '.$reg->nm_usuario.'
                                 <br> 
                                 '.$reg->dsStatus.'
                                 <br> 
