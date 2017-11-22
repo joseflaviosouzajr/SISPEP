@@ -1,10 +1,4 @@
 <?php
-interface intfModelClassificacao{
-
-    public function regClassificacao();
-
-}
-
 class ModelClassificacao extends ControlPaciente
 {
     public $dsDiagnostico;
